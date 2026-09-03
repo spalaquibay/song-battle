@@ -24,7 +24,15 @@
 
     <h2>👥 Jugadores</h2>
 
-    <p>Aún no hay jugadores conectados.</p>
+    {% if jugadores %}
+        <ul>
+            {% for jugador in jugadores %}
+                <li>🟢 {{ jugador }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aún no hay jugadores conectados.</p>
+    {% endif %}
 
     <button>▶️ Iniciar juego</button>
 
