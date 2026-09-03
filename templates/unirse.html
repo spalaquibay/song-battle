@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unirse - Song Battle</title>
+</head>
+
+<body>
+
+    <h1>🎵 Unirse a una partida</h1>
+
+    <p>Ingresa el código de la partida y tu nickname.</p>
+
+    <form method="POST">
+
+        <label for="codigo">Código de partida:</label>
+        <br>
+
+        <input
+            type="text"
+            id="codigo"
+            name="codigo"
+            placeholder="Ej: KOXA"
+            maxlength="4"
+            required
+        >
+
+        <br><br>
+
+        <label for="nickname">Nickname:</label>
+        <br>
+
+        <input
+            type="text"
+            id="nickname"
+            name="nickname"
+            placeholder="Ej: Sandra"
+            maxlength="15"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">🎮 Unirme</button>
+
+    </form>
+
+    <br>
+
+    <a href="/">← Volver al inicio</a>
+
+</body>
+</html>

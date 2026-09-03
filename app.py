@@ -31,6 +31,22 @@ def crear_partida():
 
     return render_template("crear_partida.html")
 
+@app.route("/unirse", methods=["GET", "POST"])
+def unirse():
+
+    if request.method == "POST":
+
+        codigo = request.form["codigo"].upper()
+        nickname = request.form["nickname"]
+
+        return render_template(
+            "jugador.html",
+            codigo=codigo,
+            nickname=nickname
+        )
+
+    return render_template("unirse.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
