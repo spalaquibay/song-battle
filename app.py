@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session, jsonify
 import random
 import string
 
 app = Flask(__name__)
+app.secret_key = "song-battle-clave-secreta"
 
 partidas = {}
 
@@ -60,7 +61,9 @@ def crear_partida():
         partidas[codigo] = {
             "categoria": categoria,
             "preguntas": preguntas,
-            "jugadores": []
+            "jugadores": [],
+            "puntos": {},
+            "estado": "esperando"
         }
 
         return redirect(f"/sala/{codigo}")
@@ -84,6 +87,26 @@ def sala(codigo):
         jugadores=partida["jugadores"]
     )
 
+@app.route("/iniciar/<codigo>", methods=["POST"])
+def iniciar(codigo):
+
+    if codigo not in partidas:
+        return "La partida no existe."
+
+    partidas[codigo]["estado"] = "jugando"
+
+    return redirect(f"/juego/{codigo}")
+
+@app.route("/estado/<codigo>")
+def estado(codigo):
+
+    if codigo not in partidas:
+        return jsonify({"estado": "no_existe"})
+
+    return jsonify({
+        "estado": partidas[codigo]["estado"]
+    })
+
 @app.route("/juego/<codigo>")
 def juego(codigo):
 
@@ -101,6 +124,35 @@ def juego(codigo):
         pregunta=pregunta
     )
 
+
+@app.route("/responder/<codigo>", methods=["POST"])
+def responder(codigo):
+    if codigo not in partidas:
+        return "La partida no existe."
+
+    nickname = session.get("nickname")
+
+    if not nickname:
+        return "No hay un jugador identificado."
+
+    respuesta = int(request.form["respuesta"])
+
+    pregunta = preguntas_prueba[0]
+
+    if respuesta == pregunta["correcta"]:
+        partidas[codigo]["puntos"][nickname] += 1
+        resultado = "¡Correcto! 🎉"
+    else:
+        resultado = "Respuesta incorrecta ❌"
+
+    puntos = partidas[codigo]["puntos"][nickname]
+
+    return render_template(
+        "resultado.html",
+        resultado=resultado,
+        puntos=puntos
+    )
+
 @app.route("/unirse", methods=["GET", "POST"])
 def unirse():
 
@@ -112,7 +164,12 @@ def unirse():
         if codigo not in partidas:
             return "La partida no existe."
 
-        partidas[codigo]["jugadores"].append(nickname)
+        if nickname not in partidas[codigo]["jugadores"]:
+            partidas[codigo]["jugadores"].append(nickname)
+            partidas[codigo]["puntos"][nickname] = 0
+
+        session["nickname"] = nickname
+        session["codigo"] = codigo
 
         return render_template(
             "jugador.html",

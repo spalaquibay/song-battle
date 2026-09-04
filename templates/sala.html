@@ -34,9 +34,9 @@
         <p>Aún no hay jugadores conectados.</p>
     {% endif %}
 
-    <a href="/juego/{{ codigo }}">
-        <button>▶️ Iniciar juego</button>
-    </a>
+    <form method="POST" action="/iniciar/{{ codigo }}">
+        <button type="submit">▶️ Iniciar juego</button>
+    </form>
 
     <br><br>
 

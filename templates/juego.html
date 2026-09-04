@@ -18,11 +18,11 @@
 
     <p>Selecciona tu respuesta:</p>
 
-    <div>
+    <form method="POST" action="/responder/{{ codigo }}">
 
         {% for opcion in pregunta.opciones %}
 
-            <button type="button">
+            <button type="submit" name="respuesta" value="{{ loop.index0 }}">
                 {{ opcion }}
             </button>
 
@@ -30,7 +30,7 @@
 
         {% endfor %}
 
-    </div>
+    </form>
 
 </body>
 </html>
