@@ -63,7 +63,8 @@ def crear_partida():
             "preguntas": preguntas,
             "jugadores": [],
             "puntos": {},
-            "estado": "esperando"
+            "estado": "esperando",
+            "pregunta_actual": {}
         }
 
         return redirect(f"/sala/{codigo}")
@@ -109,21 +110,37 @@ def estado(codigo):
 
 @app.route("/juego/<codigo>")
 def juego(codigo):
-
     if codigo not in partidas:
         return "La partida no existe."
 
     partida = partidas[codigo]
+    nickname = session.get("nickname")
 
-    pregunta = preguntas_prueba[0]
+    if not nickname:
+        return "No hay un jugador identificado."
+
+    if nickname not in partida["pregunta_actual"]:
+        partida["pregunta_actual"][nickname] = 0
+
+    indice = partida["pregunta_actual"][nickname]
+
+    if indice >= len(preguntas_prueba):
+        return render_template(
+            "resultado.html",
+            resultado="🎉 ¡Partida terminada!",
+            puntos=partida["puntos"][nickname]
+        )
+
+    pregunta = preguntas_prueba[indice]
 
     return render_template(
         "juego.html",
         codigo=codigo,
         preguntas=partida["preguntas"],
-        pregunta=pregunta
+        pregunta=pregunta,
+        numero_pregunta=indice + 1,
+        total_preguntas=len(preguntas_prueba)
     )
-
 
 @app.route("/responder/<codigo>", methods=["POST"])
 def responder(codigo):
@@ -137,20 +154,46 @@ def responder(codigo):
 
     respuesta = int(request.form["respuesta"])
 
-    pregunta = preguntas_prueba[0]
+    partida = partidas[codigo]
+
+    if nickname not in partida["puntos"]:
+        partida["puntos"][nickname] = 0
+
+    if nickname not in partida["pregunta_actual"]:
+        partida["pregunta_actual"][nickname] = 0
+
+    indice = partida["pregunta_actual"][nickname]
+
+    if indice >= len(preguntas_prueba):
+        return render_template(
+            "resultado.html",
+            resultado="🎉 ¡Partida terminada!",
+            puntos=partida["puntos"][nickname]
+        )
+
+    pregunta = preguntas_prueba[indice]
 
     if respuesta == pregunta["correcta"]:
-        partidas[codigo]["puntos"][nickname] += 1
+        partida["puntos"][nickname] += 1
         resultado = "¡Correcto! 🎉"
+        puntos_ganados = 1
     else:
         resultado = "Respuesta incorrecta ❌"
+        puntos_ganados = 0
 
-    puntos = partidas[codigo]["puntos"][nickname]
+    partida["pregunta_actual"][nickname] += 1
+
+    siguiente = (
+        partida["pregunta_actual"][nickname] < len(preguntas_prueba)
+    )
 
     return render_template(
         "resultado.html",
         resultado=resultado,
-        puntos=puntos
+        puntos=partida["puntos"][nickname],
+        puntos_ganados=puntos_ganados,
+        siguiente=siguiente,
+        codigo=codigo
     )
 
 @app.route("/unirse", methods=["GET", "POST"])
@@ -166,10 +209,13 @@ def unirse():
 
         if nickname not in partidas[codigo]["jugadores"]:
             partidas[codigo]["jugadores"].append(nickname)
-            partidas[codigo]["puntos"][nickname] = 0
+
+        partidas[codigo]["puntos"][nickname] = 0
+        partidas[codigo]["pregunta_actual"][nickname] = 0
 
         session["nickname"] = nickname
         session["codigo"] = codigo
+        session["pregunta_actual"] = 0
 
         return render_template(
             "jugador.html",
