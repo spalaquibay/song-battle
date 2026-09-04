@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import random
 import string
+from database import crear_tablas
 
 app = Flask(__name__)
 app.secret_key = "song-battle-clave-secreta"
+crear_tablas()
 
 partidas = {}
 
