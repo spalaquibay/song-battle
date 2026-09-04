@@ -6,6 +6,39 @@ app = Flask(__name__)
 
 partidas = {}
 
+preguntas_prueba = [
+    {
+        "pregunta": "¿Quién canta Shape of You?",
+        "opciones": [
+            "Ed Sheeran",
+            "Bruno Mars",
+            "Justin Bieber",
+            "The Weeknd"
+        ],
+        "correcta": 0
+    },
+    {
+        "pregunta": "¿Quién canta Bad Guy?",
+        "opciones": [
+            "Taylor Swift",
+            "Billie Eilish",
+            "Ariana Grande",
+            "Dua Lipa"
+        ],
+        "correcta": 1
+    },
+    {
+        "pregunta": "¿Quién canta Blinding Lights?",
+        "opciones": [
+            "The Weeknd",
+            "Drake",
+            "Ed Sheeran",
+            "Post Malone"
+        ],
+        "correcta": 0
+    }
+]
+
 
 @app.route("/")
 def inicio():
@@ -51,6 +84,22 @@ def sala(codigo):
         jugadores=partida["jugadores"]
     )
 
+@app.route("/juego/<codigo>")
+def juego(codigo):
+
+    if codigo not in partidas:
+        return "La partida no existe."
+
+    partida = partidas[codigo]
+
+    pregunta = preguntas_prueba[0]
+
+    return render_template(
+        "juego.html",
+        codigo=codigo,
+        preguntas=partida["preguntas"],
+        pregunta=pregunta
+    )
 
 @app.route("/unirse", methods=["GET", "POST"])
 def unirse():

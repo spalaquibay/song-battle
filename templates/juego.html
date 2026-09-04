@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego - Song Battle</title>
+</head>
+
+<body>
+
+    <h1>🎵 Song Battle</h1>
+
+    <p>Pregunta 1 de {{ preguntas }}</p>
+
+    <hr>
+
+    <h2>🎧 {{ pregunta.pregunta }}</h2>
+
+    <p>Selecciona tu respuesta:</p>
+
+    <div>
+
+        {% for opcion in pregunta.opciones %}
+
+            <button type="button">
+                {{ opcion }}
+            </button>
+
+            <br><br>
+
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>
