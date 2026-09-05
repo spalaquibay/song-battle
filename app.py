@@ -7,7 +7,6 @@ app = Flask(__name__)
 app.secret_key = "song-battle-clave-secreta"
 crear_tablas()
 
-partidas = {}
 
 preguntas_prueba = [
     {
