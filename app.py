@@ -266,6 +266,48 @@ def responder(codigo):
         codigo=codigo
     )
 
+
+@app.route("/ranking/<codigo>")
+def ranking(codigo):
+    if codigo not in partidas:
+        return "La partida no existe."
+
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    # Buscar la partida en SQLite
+    cursor.execute(
+        "SELECT id FROM partidas WHERE codigo = ?",
+        (codigo,)
+    )
+
+    partida_db = cursor.fetchone()
+
+    if not partida_db:
+        conexion.close()
+        return "La partida no existe en la base de datos."
+
+    # Obtener los jugadores ordenados por puntos
+    cursor.execute(
+        """
+        SELECT nickname, puntos
+        FROM jugadores
+        WHERE partida_id = ?
+        ORDER BY puntos DESC
+        """,
+        (partida_db["id"],)
+    )
+
+    jugadores = cursor.fetchall()
+
+    conexion.close()
+
+    return render_template(
+        "ranking.html",
+        jugadores=jugadores,
+        codigo=codigo
+    )
+
 @app.route("/unirse", methods=["GET", "POST"])
 def unirse():
     if request.method == "POST":

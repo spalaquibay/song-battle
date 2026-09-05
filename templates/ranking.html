@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - Song Battle</title>
+</head>
+
+<body>
+
+    <h1>🎵 Song Battle</h1>
+
+    <h2>🏆 Ranking</h2>
+
+    <p>Resultados de la partida</p>
+
+    <hr>
+
+    {% if jugadores %}
+
+        <ol>
+
+            {% for jugador in jugadores %}
+
+                <li>
+                    <strong>{{ jugador.nickname }}</strong>
+                    — {{ jugador.puntos }} punto(s)
+                </li>
+
+            {% endfor %}
+
+        </ol>
+
+    {% else %}
+
+        <p>No hay jugadores registrados.</p>
+
+    {% endif %}
+
+    <hr>
+
+    <a href="/">← Volver al inicio</a>
+
+</body>
+</html>
