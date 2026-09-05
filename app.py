@@ -559,7 +559,10 @@ def responder(codigo):
     if not player_id:
         return "No hay un jugador identificado."
 
-    respuesta = request.form["respuesta"]
+    respuesta = request.form["respuesta"].lower()
+
+    if respuesta == "reggaetón":
+        respuesta = "reggaeton"
 
     conexion = conectar()
     cursor = conexion.cursor()
