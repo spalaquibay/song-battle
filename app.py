@@ -278,13 +278,29 @@ def juego(codigo):
 
     pregunta = preguntas_prueba[indice]
 
+    # Buscar la canción en SQLite
+    cursor = conectar().cursor()
+
+    cursor.execute(
+        """
+        SELECT titulo, artista, categoria, archivo
+        FROM canciones
+        WHERE id = ?
+        """,
+        (1,)
+    )
+
+    cancion = cursor.fetchone()
+    cursor.connection.close()
+
     return render_template(
         "juego.html",
         codigo=codigo,
         pregunta=pregunta,
         numero_pregunta=indice + 1,
-        total_preguntas=len(preguntas_prueba)
-    )
+        total_preguntas=len(preguntas_prueba),
+        cancion=cancion
+    )      
 
 @app.route("/responder/<codigo>", methods=["POST"])
 def responder(codigo):
