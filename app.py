@@ -17,7 +17,8 @@ preguntas_prueba = [
             "Justin Bieber",
             "The Weeknd"
         ],
-        "correcta": 0
+        "correcta": 0,
+        "cancion_id": 1
     },
     {
         "pregunta": "¿Quién canta Bad Guy?",
@@ -27,7 +28,8 @@ preguntas_prueba = [
             "Ariana Grande",
             "Dua Lipa"
         ],
-        "correcta": 1
+        "correcta": 1,
+        "cancion_id": 2
     },
     {
         "pregunta": "¿Quién canta Blinding Lights?",
@@ -37,7 +39,8 @@ preguntas_prueba = [
             "Ed Sheeran",
             "Post Malone"
         ],
-        "correcta": 0
+        "correcta": 0,
+        "cancion_id": 1
     }
 ]
 
@@ -278,8 +281,9 @@ def juego(codigo):
 
     pregunta = preguntas_prueba[indice]
 
-    # Buscar la canción en SQLite
-    cursor = conectar().cursor()
+    # Buscar la canción correspondiente a la pregunta
+    conexion = conectar()
+    cursor = conexion.cursor()
 
     cursor.execute(
         """
@@ -287,11 +291,11 @@ def juego(codigo):
         FROM canciones
         WHERE id = ?
         """,
-        (1,)
+        (pregunta["cancion_id"],)
     )
 
     cancion = cursor.fetchone()
-    cursor.connection.close()
+    conexion.close()
 
     return render_template(
         "juego.html",
