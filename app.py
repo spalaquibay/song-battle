@@ -263,7 +263,7 @@ def inicio():
 def crear_partida():
     if request.method == "POST":
         nickname = request.form["nickname"]
-        total_preguntas = request.form["total_preguntas"]
+        total_preguntas = int(request.form["total_preguntas"])
 
         codigo = ''.join(
             random.choices(
@@ -272,21 +272,50 @@ def crear_partida():
             )
         )
 
-        # Guardar la partida en SQLite
+        # Conectar a SQLite
         conexion = conectar()
         cursor = conexion.cursor()
 
+        # Crear la partida
         cursor.execute(
             """
             INSERT INTO partidas
             (codigo, categoria, total_preguntas, estado)
             VALUES (?, ?, ?, ?)
             """,
-            (codigo, "mixto", int(total_preguntas), "esperando")
+            (codigo, "mixto", total_preguntas, "esperando")
         )
 
         # Obtener el ID de la partida
         partida_id = cursor.lastrowid
+
+        cursor.execute(
+            """
+            SELECT id, categoria
+            FROM canciones
+            WHERE categoria IN ('pop', 'rock', 'reggaeton')
+            ORDER BY id
+            """
+        )
+
+        canciones = cursor.fetchall()
+
+        # Seleccionar aleatoriamente 3 o 5 canciones
+        canciones_seleccionadas = random.sample(
+            canciones,
+            total_preguntas
+        )
+
+        # Guardar las canciones seleccionadas para esta partida
+        for orden, cancion in enumerate(canciones_seleccionadas):
+            cursor.execute(
+                """
+                INSERT INTO preguntas_partida
+                (partida_id, cancion_id, orden)
+                VALUES (?, ?, ?)
+                """,
+                (partida_id, cancion["id"], orden)
+            )
 
         # Registrar al anfitrión como jugador
         cursor.execute(
@@ -453,9 +482,11 @@ def juego(codigo):
     conexion = conectar()
     cursor = conexion.cursor()
 
+    # Obtener la partida y el progreso del jugador
     cursor.execute(
         """
-        SELECT p.id, p.codigo, p.categoria, j.puntos, j.pregunta_actual
+        SELECT p.id, p.codigo, p.total_preguntas,
+               j.puntos, j.pregunta_actual
         FROM partidas p
         JOIN jugadores j ON j.partida_id = p.id
         WHERE p.codigo = ? AND j.id = ?
@@ -464,23 +495,20 @@ def juego(codigo):
     )
 
     datos = cursor.fetchone()
-    conexion.close()
 
     if not datos:
+        conexion.close()
         return "El jugador no pertenece a esta partida."
 
+    partida_id = datos["id"]
     indice = datos["pregunta_actual"]
     puntos = datos["puntos"]
-    categoria = datos["categoria"]
+    total_preguntas = datos["total_preguntas"]
 
-    # Obtener las preguntas de la categoría seleccionada
-    preguntas_categoria = [
-        p for p in preguntas_prueba
-        if p["categoria"] == categoria
-    ]
+    # Comprobar si la partida ya terminó
+    if indice >= total_preguntas:
+        conexion.close()
 
-    # Comprobar si ya terminó las 5 preguntas
-    if indice >= len(preguntas_categoria):
         return render_template(
             "resultado.html",
             resultado="🎉 ¡Partida terminada!",
@@ -490,36 +518,39 @@ def juego(codigo):
             codigo=codigo
         )
 
-    # Obtener las canciones de la categoría seleccionada
-    conexion = conectar()
-    cursor = conexion.cursor()
-
+    # Obtener la canción correspondiente a esta pregunta
     cursor.execute(
         """
-        SELECT id, titulo, artista, categoria, archivo
-        FROM canciones
-        WHERE categoria = ?
-        ORDER BY id
-        LIMIT 5
+        SELECT c.id, c.titulo, c.artista, c.categoria, c.archivo
+        FROM preguntas_partida pp
+        JOIN canciones c ON c.id = pp.cancion_id
+        WHERE pp.partida_id = ? AND pp.orden = ?
         """,
-        (categoria,)
+        (partida_id, indice)
     )
 
-    canciones = cursor.fetchall()
+    cancion = cursor.fetchone()
+
     conexion.close()
 
-    # Obtener la pregunta y canción correspondientes
-    pregunta = preguntas_categoria[indice]
-    cancion = canciones[indice]
+    if not cancion:
+        return "No se encontró la canción de esta pregunta."
+
+    # Opciones de respuesta
+    opciones = [
+        "Pop",
+        "Rock",
+        "Reggaetón"
+    ]
 
     return render_template(
         "juego.html",
         codigo=codigo,
-        pregunta=pregunta,
+        cancion=cancion,
         numero_pregunta=indice + 1,
-        total_preguntas=len(preguntas_categoria),
-        cancion=cancion
-    )    
+        total_preguntas=total_preguntas,
+        opciones=opciones
+    )
 
 @app.route("/responder/<codigo>", methods=["POST"])
 def responder(codigo):
@@ -528,14 +559,16 @@ def responder(codigo):
     if not player_id:
         return "No hay un jugador identificado."
 
-    respuesta = int(request.form["respuesta"])
+    respuesta = request.form["respuesta"]
 
     conexion = conectar()
     cursor = conexion.cursor()
 
+    # Obtener la partida y el progreso del jugador
     cursor.execute(
         """
-        SELECT p.id, p.categoria, j.puntos, j.pregunta_actual
+        SELECT p.id, p.total_preguntas,
+               j.puntos, j.pregunta_actual
         FROM partidas p
         JOIN jugadores j ON j.partida_id = p.id
         WHERE p.codigo = ? AND j.id = ?
@@ -549,18 +582,13 @@ def responder(codigo):
         conexion.close()
         return "El jugador no pertenece a esta partida."
 
+    partida_id = datos["id"]
     indice = datos["pregunta_actual"]
     puntos = datos["puntos"]
-    categoria = datos["categoria"]
-
-    # Obtener las preguntas de la categoría seleccionada
-    preguntas_categoria = [
-        p for p in preguntas_prueba
-        if p["categoria"] == categoria
-    ]
+    total_preguntas = datos["total_preguntas"]
 
     # Comprobar si la partida ya terminó
-    if indice >= len(preguntas_categoria):
+    if indice >= total_preguntas:
         conexion.close()
 
         return render_template(
@@ -572,11 +600,27 @@ def responder(codigo):
             codigo=codigo
         )
 
-    # Obtener la pregunta actual de la categoría
-    pregunta = preguntas_categoria[indice]
+    # Obtener la canción correspondiente a la pregunta actual
+    cursor.execute(
+        """
+        SELECT c.categoria
+        FROM preguntas_partida pp
+        JOIN canciones c ON c.id = pp.cancion_id
+        WHERE pp.partida_id = ? AND pp.orden = ?
+        """,
+        (partida_id, indice)
+    )
+
+    cancion = cursor.fetchone()
+
+    if not cancion:
+        conexion.close()
+        return "No se encontró la canción de esta pregunta."
 
     # Comprobar la respuesta
-    if respuesta == pregunta["correcta"]:
+    genero_correcto = cancion["categoria"]
+
+    if respuesta == genero_correcto:
         puntos += 1
         resultado = "¡Correcto! 🎉"
         puntos_ganados = 1
@@ -600,7 +644,7 @@ def responder(codigo):
     conexion.close()
 
     # Comprobar si quedan preguntas
-    siguiente = indice < len(preguntas_categoria)
+    siguiente = indice < total_preguntas
 
     return render_template(
         "resultado.html",

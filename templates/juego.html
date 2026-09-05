@@ -14,21 +14,23 @@
 
     <hr>
 
-    <h2>🎧 {{ pregunta.pregunta }}</h2>
+    <h2>🎧 Escucha el audio y adivina el género</h2>
 
     <audio controls>
-    <source src="{{ url_for('static', filename='songs/' + cancion['archivo']) }}" type="audio/wav">
-    Tu navegador no soporta audio.
+        <source src="{{ url_for('static', filename='songs/' + cancion['archivo']) }}" type="audio/wav">
+        Tu navegador no soporta audio.
     </audio>
+
+    <br><br>
 
     <p>Selecciona tu respuesta:</p>
 
     <form method="POST" action="/responder/{{ codigo }}">
 
-        {% for opcion in pregunta.opciones %}
+        {% for opcion in opciones %}
 
-            <button type="submit" name="respuesta" value="{{ loop.index0 }}">
-                {{ opcion }}
+            <button type="submit" name="respuesta" value="{{ opcion }}">
+                🎵 {{ opcion }}
             </button>
 
             <br><br>

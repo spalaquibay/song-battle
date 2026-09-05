@@ -44,6 +44,18 @@ def crear_tablas():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS preguntas_partida (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            partida_id INTEGER NOT NULL,
+            cancion_id INTEGER NOT NULL,
+            orden INTEGER NOT NULL,
+            FOREIGN KEY (partida_id) REFERENCES partidas(id),
+            FOREIGN KEY (cancion_id) REFERENCES canciones(id)
+        )
+    """)
+
+
     conexion.commit()
     conexion.close()
 
