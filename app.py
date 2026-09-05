@@ -378,8 +378,6 @@ def responder(codigo):
 
 @app.route("/ranking/<codigo>")
 def ranking(codigo):
-    if codigo not in partidas:
-        return "La partida no existe."
 
     conexion = conectar()
     cursor = conexion.cursor()
