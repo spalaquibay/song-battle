@@ -1,0 +1,591 @@
+* {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(124, 58, 237, 0.20), transparent 30%),
+                radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.18), transparent 30%),
+                radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.12), transparent 35%),
+                #070711;
+            overflow-x: hidden;
+        }
+
+        /* =========================
+           DECORACIÓN DE FONDO
+           ========================= */
+
+        .luz {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .luz-1 {
+            background: #8b5cf6;
+            top: -100px;
+            left: -80px;
+        }
+
+        .luz-2 {
+            background: #2563eb;
+            right: -100px;
+            top: 35%;
+        }
+
+        .luz-3 {
+            background: #ec4899;
+            left: 35%;
+            bottom: -180px;
+        }
+
+        /* =========================
+           CONTENEDOR
+           ========================= */
+
+        .pagina {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 30px 20px 40px;
+        }
+
+        .contenido {
+            width: 100%;
+            max-width: 1100px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* =========================
+           CABECERA
+           ========================= */
+
+        .cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 70px;
+        }
+
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #d5d5e5;
+        }
+
+        .nota {
+            font-size: 25px;
+            color: #a78bfa;
+        }
+
+        .mini-menu {
+            display: flex;
+            gap: 30px;
+            color: #77778b;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .mini-menu span:nth-child(2) {
+            color: #a78bfa;
+        }
+
+        /* =========================
+           ICONO CENTRAL
+           ========================= */
+
+        .icono {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 30px;
+            border: 1px solid rgba(167, 139, 250, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(20, 20, 35, 0.8);
+            box-shadow:
+                0 0 30px rgba(167, 139, 250, 0.15),
+                inset 0 0 25px rgba(167, 139, 250, 0.05);
+        }
+
+        .icono::before {
+            content: "";
+            position: absolute;
+            width: 125px;
+            height: 125px;
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            border-radius: 50%;
+        }
+
+        .icono::after {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            border-radius: 50%;
+        }
+
+        .icono span {
+            font-size: 52px;
+            color: #c4b5fd;
+        }
+
+        /* =========================
+           TITULO
+           ========================= */
+
+        .titulo {
+            margin: 0;
+            font-size: clamp(55px, 10vw, 110px);
+            line-height: 0.9;
+            letter-spacing: -6px;
+            font-weight: 900;
+        }
+
+        .titulo .song {
+            display: block;
+            color: #f5f5f7;
+        }
+
+        .titulo .battle {
+            display: block;
+            background: linear-gradient(
+                90deg,
+                #c084fc,
+                #a78bfa,
+                #818cf8,
+                #c084fc
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitulo {
+            max-width: 650px;
+            margin: 30px auto 0;
+            color: #a7a7b8;
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           ECUALIZADOR
+           ========================= */
+
+        .ecualizador {
+            height: 70px;
+            margin: 35px auto 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .barra {
+            width: 6px;
+            border-radius: 10px;
+            background: linear-gradient(
+                to top,
+                #8b5cf6,
+                #c084fc
+            );
+            box-shadow: 0 0 12px rgba(167, 139, 250, 0.5);
+            animation: sonido 1.2s ease-in-out infinite alternate;
+        }
+
+        .barra:nth-child(1) { height: 18px; animation-delay: .1s; }
+        .barra:nth-child(2) { height: 32px; animation-delay: .3s; }
+        .barra:nth-child(3) { height: 48px; animation-delay: .2s; }
+        .barra:nth-child(4) { height: 28px; animation-delay: .5s; }
+        .barra:nth-child(5) { height: 58px; animation-delay: .1s; }
+        .barra:nth-child(6) { height: 38px; animation-delay: .4s; }
+        .barra:nth-child(7) { height: 62px; animation-delay: .2s; }
+        .barra:nth-child(8) { height: 42px; animation-delay: .5s; }
+        .barra:nth-child(9) { height: 55px; animation-delay: .3s; }
+        .barra:nth-child(10) { height: 30px; animation-delay: .1s; }
+        .barra:nth-child(11) { height: 45px; animation-delay: .4s; }
+        .barra:nth-child(12) { height: 20px; animation-delay: .2s; }
+
+        @keyframes sonido {
+            from {
+                transform: scaleY(0.55);
+                opacity: 0.65;
+            }
+
+            to {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        /* =========================
+           BOTONES PRINCIPALES
+           ========================= */
+
+        .botones {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .boton {
+            position: relative;
+            min-width: 280px;
+            padding: 19px 28px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.25s ease;
+            overflow: hidden;
+        }
+
+        .boton-principal {
+            color: #09090f;
+            background: linear-gradient(
+                135deg,
+                #c084fc,
+                #8b5cf6
+            );
+            box-shadow:
+                0 10px 35px rgba(139, 92, 246, 0.25);
+        }
+
+        .boton-secundario {
+            color: white;
+            background: rgba(18, 18, 29, 0.8);
+            border: 1px solid #373747;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .boton:hover {
+            transform: translateY(-4px);
+        }
+
+        .boton-principal:hover {
+            box-shadow:
+                0 15px 45px rgba(139, 92, 246, 0.45);
+        }
+
+        .boton-secundario:hover {
+            border-color: #a78bfa;
+            box-shadow:
+                0 10px 35px rgba(167, 139, 250, 0.15);
+        }
+
+        .flecha {
+            margin-left: 15px;
+            font-size: 18px;
+        }
+
+        /* =========================
+           CARACTERÍSTICAS
+           ========================= */
+
+        .caracteristicas {
+            max-width: 750px;
+            margin: 70px auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .caracteristica {
+            padding: 22px 15px;
+            background: rgba(15, 15, 25, 0.65);
+            border: 1px solid #252535;
+            border-radius: 15px;
+            backdrop-filter: blur(8px);
+        }
+
+        .caracteristica-icono {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 13px;
+            border-radius: 50%;
+            border: 1px solid #4c3a73;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            color: #c4b5fd;
+        }
+
+        .caracteristica h3 {
+            margin: 0 0 6px;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .caracteristica p {
+            margin: 0;
+            color: #747487;
+            font-size: 12px;
+        }
+
+        /* =========================
+           GENEROS
+           ========================= */
+
+        .generos {
+            margin: 35px auto 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .generos-label {
+            color: #676778;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .genero {
+            padding: 7px 14px;
+            border-radius: 20px;
+            border: 1px solid #29293a;
+            background: #10101a;
+            color: #aaaabc;
+            font-size: 11px;
+        }
+
+        /* =========================
+           DECORACIÓN DISCO
+           ========================= */
+
+        .disco {
+            position: fixed;
+            width: 330px;
+            height: 330px;
+            right: -170px;
+            top: 45%;
+            border-radius: 50%;
+            background:
+                repeating-radial-gradient(
+                    circle,
+                    #11111b 0px,
+                    #11111b 4px,
+                    #191925 5px,
+                    #11111b 7px
+                );
+            border: 1px solid #29293b;
+            opacity: 0.8;
+            transform: rotate(-15deg);
+            z-index: 0;
+            box-shadow: 0 0 80px rgba(139, 92, 246, 0.12);
+        }
+
+        .disco::before {
+            content: "";
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #181824;
+            border: 1px solid #a78bfa;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 25px rgba(167, 139, 250, 0.2);
+        }
+
+        .disco::after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #a78bfa;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* =========================
+           AUDIFONOS DECORATIVOS
+           ========================= */
+
+        .audifonos {
+            position: fixed;
+            width: 150px;
+            height: 115px;
+            left: -40px;
+            bottom: 80px;
+            border: 10px solid #1c1c28;
+            border-bottom: 0;
+            border-radius: 80px 80px 0 0;
+            transform: rotate(-12deg);
+            z-index: 1;
+            opacity: 0.9;
+            box-shadow:
+                0 0 25px rgba(96, 165, 250, 0.12);
+        }
+
+        .audifonos::before,
+        .audifonos::after {
+            content: "";
+            position: absolute;
+            width: 38px;
+            height: 58px;
+            background: #171721;
+            border: 2px solid #333345;
+            border-radius: 12px;
+            bottom: -30px;
+        }
+
+        .audifonos::before {
+            left: -23px;
+        }
+
+        .audifonos::after {
+            right: -23px;
+        }
+
+        /* =========================
+           AVISO DERECHOS
+           ========================= */
+
+        .aviso {
+            max-width: 780px;
+            margin: 55px auto 0;
+            padding: 18px 25px;
+            border: 1px solid #282839;
+            border-radius: 14px;
+            background: rgba(12, 12, 20, 0.75);
+            color: #676777;
+            font-size: 12px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .aviso-titulo {
+            color: #9a9aab;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .aviso p {
+            margin: 0;
+        }
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+
+        @media (max-width: 800px) {
+
+            .cabecera {
+                margin-bottom: 50px;
+            }
+
+            .mini-menu {
+                display: none;
+            }
+
+            .disco {
+                width: 220px;
+                height: 220px;
+                right: -150px;
+                opacity: 0.35;
+            }
+
+            .audifonos {
+                opacity: 0.35;
+            }
+
+            .caracteristicas {
+                grid-template-columns: 1fr;
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .pagina {
+                padding: 25px 18px 30px;
+            }
+
+            .cabecera {
+                margin-bottom: 45px;
+            }
+
+            .titulo {
+                font-size: 58px;
+                letter-spacing: -4px;
+            }
+
+            .subtitulo {
+                font-size: 16px;
+            }
+
+            .icono {
+                width: 90px;
+                height: 90px;
+            }
+
+            .icono span {
+                font-size: 42px;
+            }
+
+            .botones {
+                flex-direction: column;
+            }
+
+            .boton {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .ecualizador {
+                margin-bottom: 30px;
+            }
+
+            .generos {
+                margin-top: 30px;
+            }
+
+            .disco {
+                display: none;
+            }
+
+            .audifonos {
+                display: none;
+            }
+
+            .aviso {
+                margin-top: 45px;
+                text-align: center;
+                padding: 16px;
+            }
+        }

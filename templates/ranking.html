@@ -4,42 +4,284 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking - Song Battle</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .ranking-pagina {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 35px 20px;
+            box-sizing: border-box;
+        }
+
+        .ranking-contenedor {
+            width: 100%;
+            max-width: 750px;
+            text-align: center;
+        }
+
+        .ranking-marca {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .tarjeta-ranking {
+            position: relative;
+            padding: 40px 35px;
+            border-radius: 28px;
+            background: rgba(14, 12, 32, 0.85);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow:
+                0 25px 70px rgba(0,0,0,0.45),
+                0 0 50px rgba(140, 70, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .tarjeta-ranking::before {
+            content: "";
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: rgba(145, 75, 255, 0.12);
+            filter: blur(80px);
+            top: -180px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .icono-ranking {
+            width: 105px;
+            height: 105px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            background: linear-gradient(
+                135deg,
+                rgba(150, 70, 255, 0.35),
+                rgba(255, 70, 180, 0.25)
+            );
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow:
+                0 0 30px rgba(150, 70, 255, 0.25),
+                inset 0 0 25px rgba(255,255,255,0.05);
+        }
+
+        .ranking-titulo {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 44px);
+            font-weight: 900;
+        }
+
+        .ranking-subtitulo {
+            margin: 10px 0 30px;
+            opacity: 0.6;
+            font-size: 15px;
+        }
+
+        .lista-ranking {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 0 auto;
+            max-width: 620px;
+        }
+
+        .jugador-ranking {
+            display: grid;
+            grid-template-columns: 55px 1fr auto;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 17px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            text-align: left;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .jugador-ranking:hover {
+            transform: translateX(4px);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .posicion {
+            font-size: 22px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .nombre-jugador {
+            font-size: 17px;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .etiqueta-jugador {
+            display: block;
+            font-size: 11px;
+            margin-top: 3px;
+            opacity: 0.45;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .puntos-jugador {
+            font-size: 19px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .separador-ranking {
+            width: 70%;
+            height: 1px;
+            margin: 30px auto 25px;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .volver-inicio {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            opacity: 0.65;
+            font-size: 14px;
+            transition: opacity 0.2s ease;
+        }
+
+        .volver-inicio:hover {
+            opacity: 1;
+        }
+
+        .sin-jugadores {
+            padding: 30px 20px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 600px) {
+            .tarjeta-ranking {
+                padding: 35px 18px;
+            }
+
+            .jugador-ranking {
+                grid-template-columns: 40px 1fr auto;
+                gap: 10px;
+                padding: 14px;
+            }
+
+            .nombre-jugador {
+                font-size: 15px;
+            }
+
+            .puntos-jugador {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🎵 Song Battle</h1>
+    <div class="luz"></div>
 
-    <h2>🏆 Ranking</h2>
+    <main class="ranking-pagina">
 
-    <p>Resultados de la partida</p>
+        <div class="ranking-contenedor">
 
-    <hr>
+            <div class="ranking-marca">
+                ♪ SONG BATTLE
+            </div>
 
-    {% if jugadores %}
+            <section class="tarjeta-ranking">
 
-        <ol>
+                <div class="icono-ranking">
+                    🏆
+                </div>
 
-            {% for jugador in jugadores %}
+                <h1 class="ranking-titulo">
+                    Ranking
+                </h1>
 
-                <li>
-                    <strong>{{ jugador.nickname }}</strong>
-                    — {{ jugador.puntos }} punto(s)
-                </li>
+                <p class="ranking-subtitulo">
+                    Resultados de la partida
+                </p>
 
-            {% endfor %}
 
-        </ol>
+                {% if jugadores %}
 
-    {% else %}
+                    <div class="lista-ranking">
 
-        <p>No hay jugadores registrados.</p>
+                        {% for jugador in jugadores %}
 
-    {% endif %}
+                            <div class="jugador-ranking">
 
-    <hr>
+                                <div class="posicion">
+                                    {% if loop.index == 1 %}
+                                        🥇
+                                    {% elif loop.index == 2 %}
+                                        🥈
+                                    {% elif loop.index == 3 %}
+                                        🥉
+                                    {% else %}
+                                        {{ loop.index }}
+                                    {% endif %}
+                                </div>
 
-    <a href="/">← Volver al inicio</a>
+                                <div class="nombre-jugador">
+
+                                    {{ jugador.nickname }}
+
+                                    <span class="etiqueta-jugador">
+                                        Jugador
+                                    </span>
+
+                                </div>
+
+                                <div class="puntos-jugador">
+                                    {{ jugador.puntos }} pts
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="sin-jugadores">
+                        No hay jugadores registrados.
+                    </div>
+
+                {% endif %}
+
+
+                <div class="separador-ranking"></div>
+
+                <a href="/" class="volver-inicio">
+                    ← Volver al inicio
+                </a>
+
+            </section>
+
+        </div>
+
+    </main>
 
 </body>
 </html>

@@ -3,19 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Jugador - Song Battle</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .pagina-jugador {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .tarjeta-jugador {
+            width: 100%;
+            max-width: 560px;
+            padding: 45px 40px;
+            text-align: center;
+            background: rgba(16, 16, 27, 0.9);
+            border: 1px solid #302d45;
+            border-radius: 24px;
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.45),
+                0 0 45px rgba(139, 92, 246, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        /* ICONO */
+
+        .icono-jugador {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #171724;
+            border: 1px solid #514477;
+            font-size: 40px;
+            box-shadow:
+                0 0 30px rgba(139, 92, 246, 0.16);
+        }
+
+        .icono-jugador::before {
+            content: "";
+            position: absolute;
+            width: 105px;
+            height: 105px;
+            border: 1px solid rgba(167, 139, 250, 0.12);
+            border-radius: 50%;
+        }
+
+        /* TITULO */
+
+        .tarjeta-jugador h1 {
+            margin: 0;
+            font-size: 34px;
+            letter-spacing: -1px;
+        }
+
+        .saludo {
+            margin: 12px 0 0;
+            color: #a7a7b8;
+            font-size: 15px;
+        }
+
+        .saludo strong {
+            color: #c4b5fd;
+        }
+
+        /* CODIGO */
+
+        .partida-label {
+            margin-top: 35px;
+            color: #6e6e7e;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .codigo-jugador {
+            margin: 10px 0 0;
+            color: #c4b5fd;
+            font-size: 52px;
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-shadow:
+                0 0 20px rgba(167, 139, 250, 0.25);
+        }
+
+        /* SEPARADOR */
+
+        .separador {
+            height: 1px;
+            margin: 35px 0;
+            background: #292938;
+        }
+
+        /* ESTADO */
+
+        .estado-espera {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 17px;
+            border: 1px solid #40345b;
+            border-radius: 25px;
+            background: #14121f;
+            color: #b9a9df;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .punto-espera {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #a78bfa;
+            box-shadow:
+                0 0 12px rgba(167, 139, 250, 0.8);
+            animation: espera 1.4s ease-in-out infinite;
+        }
+
+        @keyframes espera {
+
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* MENSAJE */
+
+        .mensaje-espera {
+            max-width: 390px;
+            margin: 20px auto 0;
+            color: #777789;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ECUALIZADOR */
+
+        .ecualizador-jugador {
+            height: 40px;
+            margin: 28px auto 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .barra-jugador {
+            width: 4px;
+            border-radius: 5px;
+            background: #8b5cf6;
+            animation: sonido-jugador 1s ease-in-out infinite alternate;
+        }
+
+        .barra-jugador:nth-child(1) {
+            height: 13px;
+            animation-delay: .1s;
+        }
+
+        .barra-jugador:nth-child(2) {
+            height: 22px;
+            animation-delay: .3s;
+        }
+
+        .barra-jugador:nth-child(3) {
+            height: 32px;
+            animation-delay: .2s;
+        }
+
+        .barra-jugador:nth-child(4) {
+            height: 19px;
+            animation-delay: .4s;
+        }
+
+        .barra-jugador:nth-child(5) {
+            height: 27px;
+            animation-delay: .1s;
+        }
+
+        .barra-jugador:nth-child(6) {
+            height: 16px;
+            animation-delay: .3s;
+        }
+
+        .barra-jugador:nth-child(7) {
+            height: 30px;
+            animation-delay: .2s;
+        }
+
+        .barra-jugador:nth-child(8) {
+            height: 21px;
+            animation-delay: .4s;
+        }
+
+        .barra-jugador:nth-child(9) {
+            height: 13px;
+            animation-delay: .1s;
+        }
+
+        @keyframes sonido-jugador {
+
+            from {
+                transform: scaleY(0.55);
+                opacity: 0.5;
+            }
+
+            to {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        /* SALIR */
+
+        .salir {
+            display: inline-block;
+            margin-top: 30px;
+            color: #696979;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s ease;
+        }
+
+        .salir:hover {
+            color: #c4b5fd;
+        }
+
+        @media (max-width: 600px) {
+
+            .pagina-jugador {
+                padding: 20px 15px;
+            }
+
+            .tarjeta-jugador {
+                padding: 35px 22px;
+            }
+
+            .tarjeta-jugador h1 {
+                font-size: 29px;
+            }
+
+            .codigo-jugador {
+                font-size: 43px;
+                letter-spacing: 7px;
+            }
+        }
+    </style>
 
     <script>
         function comprobarPartida() {
-
             fetch("/estado/{{ codigo }}")
                 .then(response => response.json())
                 .then(data => {
-
                     if (data.estado === "jugando") {
                         window.location.href = "/juego/{{ codigo }}";
                     }
-
                 });
         }
 
@@ -26,23 +283,90 @@
 
 <body>
 
-    <h1>🎵 Song Battle</h1>
+    <!-- Luces decorativas -->
 
-    <h2>¡Hola, {{ nickname }}! 👋</h2>
+    <div class="luz luz-1"></div>
+    <div class="luz luz-2"></div>
+    <div class="luz luz-3"></div>
 
-    <p>Te has unido a la partida:</p>
 
-    <h1>{{ codigo }}</h1>
+    <main class="pagina-jugador">
 
-    <hr>
+        <section class="tarjeta-jugador">
 
-    <h2>⏳ Esperando al anfitrión...</h2>
+            <!-- Icono -->
 
-    <p>El juego comenzará cuando el anfitrión inicie la partida.</p>
+            <div class="icono-jugador">
+                🎧
+            </div>
 
-    <br>
 
-    <a href="/unirse">← Salir</a>
+            <!-- Saludo -->
+
+            <h1>¡Hola, {{ nickname }}!</h1>
+
+            <p class="saludo">
+                Te has unido correctamente a la batalla musical.
+            </p>
+
+
+            <!-- Código -->
+
+            <div class="partida-label">
+                PARTIDA
+            </div>
+
+            <div class="codigo-jugador">
+                {{ codigo }}
+            </div>
+
+
+            <div class="separador"></div>
+
+
+            <!-- Estado -->
+
+            <div class="estado-espera">
+
+                <span class="punto-espera"></span>
+
+                ESPERANDO AL ANFITRIÓN
+
+            </div>
+
+
+            <p class="mensaje-espera">
+                El juego comenzará automáticamente cuando el anfitrión
+                inicie la partida.
+            </p>
+
+
+            <!-- Ecualizador -->
+
+            <div class="ecualizador-jugador">
+
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+                <div class="barra-jugador"></div>
+
+            </div>
+
+
+            <!-- Salir -->
+
+            <a href="/unirse" class="salir">
+                ← Salir de la partida
+            </a>
+
+        </section>
+
+    </main>
 
 </body>
 </html>

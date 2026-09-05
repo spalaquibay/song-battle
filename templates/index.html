@@ -3,42 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Song Battle</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-    <h1>🎵 SONG BATTLE</h1>
+    <!-- Luces decorativas -->
 
-    <p>Juego interactivo para adivinar canciones</p>
-    <a href="/crear-partida">
-    <button>CREAR PARTIDA</button>
-    </a>
-    
-    <a href="/unirse">
-    <button>UNIRSE A UNA PARTIDA</button>
-    </a>
+    <div class="luz luz-1"></div>
+    <div class="luz luz-2"></div>
+    <div class="luz luz-3"></div>
 
-    <br><br>
+    <!-- Elementos musicales decorativos -->
 
-    <div style="
-        border: 1px solid #ccc;
-        padding: 15px;
-        margin-top: 30px;
-        max-width: 700px;
-        font-size: 14px;
-        color: #555;
-        background-color: #f8f8f8;
-    ">
-        <h3 style="margin-top: 0; color: #333;">
-            Aviso de derechos de autor
-        </h3>
+    <div class="disco"></div>
+    <div class="audifonos"></div>
 
-        <p>
-            Este proyecto académico utiliza fragmentos de audio únicamente con fines
-            demostrativos y educativos. Los derechos de las obras musicales pertenecen
-            a sus respectivos autores. Esta página no reclama propiedad sobre dichas obras.
-        </p>
+    <div class="pagina">
+
+        <main class="contenido">
+
+            <!-- Cabecera -->
+
+            <header class="cabecera">
+
+                <div class="marca">
+                    <span class="nota">♪</span>
+                    SONG BATTLE
+                </div>
+
+                <div class="mini-menu">
+                    <span>PLAY</span>
+                    <span>GUESS</span>
+                    <span>WIN</span>
+                </div>
+
+            </header>
+
+
+            <!-- Icono -->
+
+            <div class="icono">
+                <span>♫</span>
+            </div>
+
+
+            <!-- Titulo -->
+
+            <h1 class="titulo">
+                <span class="song">SONG</span>
+                <span class="battle">BATTLE</span>
+            </h1>
+
+
+            <!-- Descripcion -->
+
+            <p class="subtitulo">
+                Escucha el audio, identifica el género
+                y demuestra cuánto sabes de música.
+            </p>
+
+
+            <!-- Ecualizador -->
+
+            <div class="ecualizador" aria-hidden="true">
+
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+                <div class="barra"></div>
+
+            </div>
+
+
+            <!-- Botones -->
+
+            <div class="botones">
+
+                <a href="/crear-partida" class="boton boton-principal">
+                    🎮 CREAR PARTIDA
+                    <span class="flecha">→</span>
+                </a>
+
+                <a href="/unirse" class="boton boton-secundario">
+                    🎧 UNIRSE A UNA PARTIDA
+                    <span class="flecha">→</span>
+                </a>
+
+            </div>
+
+
+            <!-- Caracteristicas -->
+
+            <section class="caracteristicas">
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        🎧
+                    </div>
+
+                    <h3>ESCUCHA</h3>
+
+                    <p>
+                        Reproduce el audio
+                    </p>
+
+                </div>
+
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        ♪
+                    </div>
+
+                    <h3>IDENTIFICA</h3>
+
+                    <p>
+                        Adivina el género
+                    </p>
+
+                </div>
+
+
+                <div class="caracteristica">
+
+                    <div class="caracteristica-icono">
+                        🏆
+                    </div>
+
+                    <h3>GANA</h3>
+
+                    <p>
+                        Acumula puntos
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- Generos -->
+
+            <div class="generos">
+
+                <span class="generos-label">
+                    Géneros
+                </span>
+
+                <span class="genero">POP</span>
+                <span class="genero">ROCK</span>
+                <span class="genero">REGGAETÓN</span>
+
+            </div>
+
+
+            <!-- Aviso -->
+
+            <div class="aviso">
+
+                <div class="aviso-titulo">
+                    Aviso de derechos de autor
+                </div>
+
+                <p>
+                    Este proyecto académico utiliza fragmentos de audio únicamente
+                    con fines demostrativos y educativos. Los derechos de las obras
+                    musicales pertenecen a sus respectivos autores. Esta página no
+                    reclama propiedad sobre dichas obras.
+                </p>
+
+            </div>
+
+        </main>
+
     </div>
 
 </body>

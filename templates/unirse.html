@@ -3,52 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Unirse - Song Battle</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .pagina-formulario {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+        }
+
+        .tarjeta-formulario {
+            width: 100%;
+            max-width: 500px;
+            padding: 42px;
+            background: rgba(16, 16, 27, 0.88);
+            border: 1px solid #302d45;
+            border-radius: 22px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(139, 92, 246, 0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .encabezado-formulario {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .icono-formulario {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            background: #171724;
+            border: 1px solid #5b4b82;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
+        }
+
+        .encabezado-formulario h1 {
+            margin: 0;
+            font-size: 34px;
+            letter-spacing: -1px;
+        }
+
+        .encabezado-formulario p {
+            margin: 12px 0 0;
+            color: #858598;
+            font-size: 14px;
+        }
+
+        .campo {
+            margin-bottom: 24px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 9px;
+            color: #b7b7c7;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 15px 16px;
+            border: 1px solid #353547;
+            border-radius: 11px;
+            background: #0d0d16;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .campo input::placeholder {
+            color: #5f5f70;
+        }
+
+        .campo input:focus {
+            border-color: #9b7bea;
+            box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.10);
+        }
+
+        /* Código de partida */
+
+        .codigo-input {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 24px !important;
+            font-weight: bold;
+            letter-spacing: 8px;
+            padding: 17px !important;
+        }
+
+        .codigo-ayuda {
+            margin-top: 8px;
+            color: #606071;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .boton-unirse {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            color: #09090f;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.22);
+            transition: all 0.25s ease;
+        }
+
+        .boton-unirse:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 38px rgba(139, 92, 246, 0.38);
+        }
+
+        .volver {
+            display: block;
+            margin-top: 25px;
+            text-align: center;
+            color: #777789;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .volver:hover {
+            color: #b9a3ed;
+        }
+
+        .separador {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 28px 0;
+            color: #505061;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        .separador::before,
+        .separador::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: #292938;
+        }
+
+        @media (max-width: 600px) {
+
+            .pagina-formulario {
+                padding: 20px 15px;
+            }
+
+            .tarjeta-formulario {
+                padding: 30px 22px;
+            }
+
+            .encabezado-formulario h1 {
+                font-size: 29px;
+            }
+
+            .codigo-input {
+                font-size: 21px !important;
+                letter-spacing: 6px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🎵 Unirse a una partida</h1>
+    <!-- Luces decorativas -->
 
-    <p>Ingresa el código de la partida y tu nickname.</p>
+    <div class="luz luz-1"></div>
+    <div class="luz luz-2"></div>
+    <div class="luz luz-3"></div>
 
-    <form method="POST">
 
-        <label for="codigo">Código de partida:</label>
-        <br>
+    <main class="pagina-formulario">
 
-        <input
-            type="text"
-            id="codigo"
-            name="codigo"
-            placeholder="Ej: KOXA"
-            maxlength="4"
-            required
-        >
+        <section class="tarjeta-formulario">
 
-        <br><br>
+            <!-- Encabezado -->
 
-        <label for="nickname">Nickname:</label>
-        <br>
+            <div class="encabezado-formulario">
 
-        <input
-            type="text"
-            id="nickname"
-            name="nickname"
-            placeholder="Ej: Sandra"
-            maxlength="15"
-            required
-        >
+                <div class="icono-formulario">
+                    🎧
+                </div>
 
-        <br><br>
+                <h1>Unirse a una partida</h1>
 
-        <button type="submit">🎮 Unirme</button>
+                <p>
+                    Entra a la batalla y demuestra cuánto sabes de música
+                </p>
 
-    </form>
+            </div>
 
-    <br>
 
-    <a href="/">← Volver al inicio</a>
+            <form method="POST">
+
+                <!-- Código -->
+
+                <div class="campo">
+
+                    <label for="codigo">
+                        Código de partida
+                    </label>
+
+                    <input
+                        type="text"
+                        id="codigo"
+                        name="codigo"
+                        class="codigo-input"
+                        placeholder="AB12"
+                        maxlength="4"
+                        minlength="4"
+                        required
+                        autocomplete="off"
+                    >
+
+                    <div class="codigo-ayuda">
+                        Ingresa el código de 4 caracteres de la partida
+                    </div>
+
+                </div>
+
+
+                <div class="separador">
+                    JUGADOR
+                </div>
+
+
+                <!-- Nickname -->
+
+                <div class="campo">
+
+                    <label for="nickname">
+                        Tu nickname
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nickname"
+                        name="nickname"
+                        placeholder="Escribe tu nombre"
+                        maxlength="20"
+                        required
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <!-- Botón -->
+
+                <button type="submit" class="boton-unirse">
+                    🎵 UNIRME A LA PARTIDA
+                </button>
+
+            </form>
+
+
+            <a href="/" class="volver">
+                ← Volver al inicio
+            </a>
+
+        </section>
+
+    </main>
 
 </body>
 </html>

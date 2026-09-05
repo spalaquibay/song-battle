@@ -4,39 +4,308 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego - Song Battle</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .juego-pagina {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        .juego-contenedor {
+            width: 100%;
+            max-width: 850px;
+            text-align: center;
+        }
+
+        .juego-cabecera {
+            margin-bottom: 25px;
+        }
+
+        .juego-marca {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 12px;
+        }
+
+        .progreso {
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            background: rgba(255,255,255,0.05);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .progreso-numero {
+            font-size: 18px;
+        }
+
+        .tarjeta-juego {
+            position: relative;
+            padding: 45px 35px;
+            border-radius: 28px;
+            background: rgba(14, 12, 32, 0.82);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow:
+                0 25px 70px rgba(0,0,0,0.45),
+                0 0 50px rgba(140, 70, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .tarjeta-juego::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(145, 75, 255, 0.12);
+            filter: blur(70px);
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+
+        .icono-audio {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            background: linear-gradient(
+                135deg,
+                rgba(150, 70, 255, 0.35),
+                rgba(255, 70, 180, 0.25)
+            );
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow:
+                0 0 30px rgba(150, 70, 255, 0.25),
+                inset 0 0 25px rgba(255,255,255,0.05);
+        }
+
+        .pregunta-titulo {
+            font-size: clamp(25px, 4vw, 36px);
+            margin: 0 0 10px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .pregunta-subtitulo {
+            margin: 0 0 30px;
+            opacity: 0.65;
+            font-size: 16px;
+        }
+
+        .reproductor {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 35px;
+        }
+
+        audio {
+            width: 100%;
+            height: 48px;
+            border-radius: 30px;
+        }
+
+        .seleccion-titulo {
+            margin-bottom: 18px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .opcion {
+            position: relative;
+        }
+
+        .opcion button {
+            width: 100%;
+            min-height: 70px;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.06);
+            color: white;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 15px;
+        }
+
+        .opcion button:hover {
+            transform: translateY(-4px);
+            background: rgba(145, 75, 255, 0.18);
+            border-color: rgba(170, 110, 255, 0.55);
+            box-shadow: 0 10px 25px rgba(100, 50, 200, 0.2);
+        }
+
+        .opcion button:active {
+            transform: translateY(-1px);
+        }
+
+        .simbolo-opcion {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .pop {
+            color: #ffffff;
+        }
+
+        .rock {
+            color: #ffffff;
+        }
+
+        .reggaeton {
+            color: #ffffff;
+        }
+
+        @media (max-width: 650px) {
+            .tarjeta-juego {
+                padding: 35px 20px;
+            }
+
+            .opciones {
+                grid-template-columns: 1fr;
+            }
+
+            .opcion button {
+                min-height: 60px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🎵 Song Battle</h1>
+    <div class="luz"></div>
 
-    <p>Pregunta {{ numero_pregunta }} de {{ total_preguntas }}</p>
+    <main class="juego-pagina">
 
-    <hr>
+        <div class="juego-contenedor">
 
-    <h2>🎧 Escucha el audio y adivina el género</h2>
+            <header class="juego-cabecera">
+                <div class="juego-marca">♪ SONG BATTLE</div>
 
-    <audio controls>
-        <source src="{{ url_for('static', filename='songs/' + cancion['archivo']) }}" type="audio/mpeg">
-        Tu navegador no soporta audio.
-    </audio>
+                <div class="progreso">
+                    PREGUNTA
+                    <span class="progreso-numero">
+                        {{ numero_pregunta }}
+                    </span>
+                    DE
+                    <span class="progreso-numero">
+                        {{ total_preguntas }}
+                    </span>
+                </div>
+            </header>
 
-    <br><br>
 
-    <p>Selecciona tu respuesta:</p>
+            <section class="tarjeta-juego">
 
-    <form method="POST" action="/responder/{{ codigo }}">
-    
-        <input type="hidden" name="pregunta" value="{{ numero_pregunta }}">
+                <div class="icono-audio">
+                    🎧
+                </div>
 
-        {% for opcion in opciones %}
-            <button type="submit" name="respuesta" value="{{ opcion }}">
-                🎵 {{ opcion }}
-            </button>
-            <br><br>
-        {% endfor %}
+                <h1 class="pregunta-titulo">
+                    Escucha y adivina el género
+                </h1>
 
-    </form>
+                <p class="pregunta-subtitulo">
+                    Reproduce el audio y selecciona la respuesta correcta.
+                </p>
+
+
+                <div class="reproductor">
+
+                    <audio controls>
+                        <source
+                            src="{{ url_for('static', filename='songs/' + cancion['archivo']) }}"
+                            type="audio/mpeg">
+                        Tu navegador no soporta audio.
+                    </audio>
+
+                </div>
+
+
+                <div class="seleccion-titulo">
+                    ¿Qué género es?
+                </div>
+
+
+                <form method="POST" action="/responder/{{ codigo }}">
+
+                    <input
+                        type="hidden"
+                        name="pregunta"
+                        value="{{ numero_pregunta }}"
+                    >
+
+                    <div class="opciones">
+
+                        {% for opcion in opciones %}
+
+                            <div class="opcion">
+
+                                <button
+                                    type="submit"
+                                    name="respuesta"
+                                    value="{{ opcion }}"
+                                >
+
+                                    {% if opcion == "Pop" %}
+                                        <span class="simbolo-opcion">♫</span>
+
+                                    {% elif opcion == "Rock" %}
+                                        <span class="simbolo-opcion">⚡</span>
+
+                                    {% elif opcion == "Reggaetón" %}
+                                        <span class="simbolo-opcion">🎶</span>
+
+                                    {% endif %}
+
+                                    {{ opcion }}
+
+                                </button>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
 
 </body>
 </html>

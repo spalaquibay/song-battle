@@ -5,120 +5,281 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultado - Song Battle</title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        .resultado-pagina {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        .resultado-contenedor {
+            width: 100%;
+            max-width: 650px;
             text-align: center;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 40px 20px;
         }
 
-        .contenedor {
-            max-width: 500px;
-            margin: auto;
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        .resultado-marca {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 22px;
         }
 
-        h1 {
-            margin-bottom: 30px;
+        .tarjeta-resultado {
+            position: relative;
+            padding: 45px 35px;
+            border-radius: 28px;
+            background: rgba(14, 12, 32, 0.85);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow:
+                0 25px 70px rgba(0,0,0,0.45),
+                0 0 50px rgba(140, 70, 255, 0.12);
+            overflow: hidden;
         }
 
-        .resultado {
-            font-size: 28px;
-            margin-bottom: 25px;
+        .tarjeta-resultado::before {
+            content: "";
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: rgba(145, 75, 255, 0.12);
+            filter: blur(75px);
+            top: -170px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
         }
 
-        .puntos-pregunta {
-            font-size: 20px;
-            margin: 10px 0;
+        .icono-resultado {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 43px;
+            background: linear-gradient(
+                135deg,
+                rgba(150, 70, 255, 0.35),
+                rgba(255, 70, 180, 0.25)
+            );
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow:
+                0 0 30px rgba(150, 70, 255, 0.25),
+                inset 0 0 25px rgba(255,255,255,0.05);
         }
 
-        .puntos {
+        .resultado-titulo {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 900;
+            margin: 0 0 30px;
+        }
+
+        .bloque-puntos {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .etiqueta-puntos {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.65;
+            margin-bottom: 8px;
+        }
+
+        .valor-puntos {
             font-size: 32px;
-            font-weight: bold;
-            margin: 10px 0 25px;
+            font-weight: 900;
+            margin: 0;
         }
 
-        hr {
-            margin: 30px 0;
-            border: none;
-            border-top: 1px solid #ddd;
+        .separador {
+            width: 70%;
+            height: 1px;
+            margin: 28px auto;
+            background: rgba(255,255,255,0.12);
         }
 
-        button {
-            font-size: 18px;
-            padding: 12px 25px;
+        .final-titulo {
+            font-size: 25px;
+            font-weight: 900;
+            margin: 0 0 25px;
+        }
+
+        .boton-resultado {
+            display: inline-block;
+            min-width: 230px;
+            padding: 15px 25px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background-color: #333;
+            border-radius: 14px;
             color: white;
-        }
-
-        button:hover {
-            background-color: #555;
-        }
-
-        a {
-            color: #333;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
             text-decoration: none;
+            background: linear-gradient(
+                135deg,
+                #8f4dff,
+                #d84cff
+            );
+            box-shadow: 0 10px 30px rgba(150, 70, 255, 0.25);
+            transition: all 0.2s ease;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .boton-resultado:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(150, 70, 255, 0.35);
+        }
+
+        .boton-secundario-resultado {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: none;
+        }
+
+        .boton-secundario-resultado:hover {
+            background: rgba(255,255,255,0.12);
+            box-shadow: none;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 22px;
+            color: white;
+            opacity: 0.6;
+            text-decoration: none;
+            font-size: 14px;
+            transition: opacity 0.2s ease;
+        }
+
+        .volver:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .tarjeta-resultado {
+                padding: 35px 20px;
+            }
+
+            .boton-resultado {
+                width: 100%;
+                box-sizing: border-box;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="contenedor">
+    <div class="luz"></div>
 
-        <h1>🎵 Song Battle</h1>
+    <main class="resultado-pagina">
 
-        <div class="resultado">
-            {{ resultado }}
+        <div class="resultado-contenedor">
+
+            <div class="resultado-marca">
+                ♪ SONG BATTLE
+            </div>
+
+            <section class="tarjeta-resultado">
+
+                <div class="icono-resultado">
+                    {% if puntos_ganados > 0 %}
+                        ✓
+                    {% else %}
+                        ♪
+                    {% endif %}
+                </div>
+
+                <h1 class="resultado-titulo">
+                    {{ resultado }}
+                </h1>
+
+
+                <div class="bloque-puntos">
+
+                    <div class="etiqueta-puntos">
+                        ⭐ Puntos de esta pregunta
+                    </div>
+
+                    <p class="valor-puntos">
+                        +{{ puntos_ganados }} punto(s)
+                    </p>
+
+                </div>
+
+
+                <div class="bloque-puntos">
+
+                    <div class="etiqueta-puntos">
+                        🏆 Puntuación acumulada
+                    </div>
+
+                    <p class="valor-puntos">
+                        {{ puntos }} punto(s)
+                    </p>
+
+                </div>
+
+
+                <div class="separador"></div>
+
+
+                {% if siguiente %}
+
+                    <form method="GET" action="/juego/{{ codigo }}">
+
+                        <button
+                            type="submit"
+                            class="boton-resultado"
+                        >
+                            ➜ Siguiente pregunta
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <h2 class="final-titulo">
+                        🎉 ¡Partida terminada!
+                    </h2>
+
+                    <form method="GET" action="/ranking/{{ codigo }}">
+
+                        <button
+                            type="submit"
+                            class="boton-resultado"
+                        >
+                            🏆 Ver ranking
+                        </button>
+
+                    </form>
+
+                    <a href="/" class="volver">
+                        ← Volver al inicio
+                    </a>
+
+                {% endif %}
+
+            </section>
+
         </div>
 
-        <p class="puntos-pregunta">⭐ Puntos de esta pregunta</p>
-
-        <div class="puntos">
-            +{{ puntos_ganados }} punto(s)
-        </div>
-
-        <p class="puntos-pregunta">🏆 Puntuación acumulada</p>
-
-        <div class="puntos">
-            {{ puntos }} punto(s)
-        </div>
-
-        <hr>
-
-        {% if siguiente %}
-
-            <form method="GET" action="/juego/{{ codigo }}">
-                <button type="submit">➡️ Siguiente pregunta</button>
-            </form>
-
-        {% else %}
-
-            <h2>🎉 ¡Partida terminada!</h2>
-
-            <form method="GET" action="/ranking/{{ codigo }}">
-                <button type="submit">🏆 Ver ranking</button>
-            </form>
-
-            <br><br>
-
-            <a href="/">← Volver al inicio</a>
-
-        {% endif %}
-
-    </div>
+    </main>
 
 </body>
 </html>
