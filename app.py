@@ -214,26 +214,38 @@ def estado(codigo):
 
 @app.route("/juego/<codigo>")
 def juego(codigo):
-    if codigo not in partidas:
-        return "La partida no existe."
-
-    partida = partidas[codigo]
-
     player_id = session.get("player_id")
 
     if not player_id:
         return "No hay un jugador identificado."
 
-    if player_id not in partida["puntos"]:
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        SELECT p.id, p.codigo, j.puntos, j.pregunta_actual
+        FROM partidas p
+        JOIN jugadores j ON j.partida_id = p.id
+        WHERE p.codigo = ? AND j.id = ?
+        """,
+        (codigo, player_id)
+    )
+
+    datos = cursor.fetchone()
+    conexion.close()
+
+    if not datos:
         return "El jugador no pertenece a esta partida."
 
-    indice = partida["pregunta_actual"][player_id]
+    indice = datos["pregunta_actual"]
+    puntos = datos["puntos"]
 
     if indice >= len(preguntas_prueba):
         return render_template(
             "resultado.html",
             resultado="🎉 ¡Partida terminada!",
-            puntos=partida["puntos"][player_id],
+            puntos=puntos,
             puntos_ganados=0,
             siguiente=False,
             codigo=codigo
