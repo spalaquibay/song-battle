@@ -119,38 +119,97 @@ def crear_partida():
 
 @app.route("/sala/<codigo>")
 def sala(codigo):
-
     if codigo not in partidas:
         return "La partida no existe."
 
-    partida = partidas[codigo]
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    # Buscar la partida en SQLite
+    cursor.execute(
+        """
+        SELECT id, codigo, categoria, total_preguntas, estado
+        FROM partidas
+        WHERE codigo = ?
+        """,
+        (codigo,)
+    )
+
+    partida_db = cursor.fetchone()
+
+    if not partida_db:
+        conexion.close()
+        return "La partida no existe en la base de datos."
+
+    # Buscar los jugadores de esa partida
+    cursor.execute(
+        """
+        SELECT nickname
+        FROM jugadores
+        WHERE partida_id = ?
+        """,
+        (partida_db["id"],)
+    )
+
+    jugadores_db = cursor.fetchall()
+
+    conexion.close()
+
+    # Convertir los resultados a una lista de nombres
+    jugadores = [jugador["nickname"] for jugador in jugadores_db]
 
     return render_template(
         "sala.html",
-        codigo=codigo,
-        categoria=partida["categoria"],
-        preguntas=partida["preguntas"],
-        jugadores=partida["jugadores"]
+        codigo=partida_db["codigo"],
+        categoria=partida_db["categoria"],
+        preguntas=partida_db["total_preguntas"],
+        jugadores=jugadores
     )
 
 @app.route("/iniciar/<codigo>", methods=["POST"])
 def iniciar(codigo):
-
     if codigo not in partidas:
         return "La partida no existe."
 
+    # Cambiar el estado en memoria
     partidas[codigo]["estado"] = "jugando"
+
+    # Cambiar el estado en SQLite
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        UPDATE partidas
+        SET estado = ?
+        WHERE codigo = ?
+        """,
+        ("jugando", codigo)
+    )
+
+    conexion.commit()
+    conexion.close()
 
     return redirect(f"/juego/{codigo}")
 
 @app.route("/estado/<codigo>")
 def estado(codigo):
+    conexion = conectar()
+    cursor = conexion.cursor()
 
-    if codigo not in partidas:
+    cursor.execute(
+        "SELECT estado FROM partidas WHERE codigo = ?",
+        (codigo,)
+    )
+
+    partida_db = cursor.fetchone()
+    conexion.close()
+
+    if not partida_db:
         return jsonify({"estado": "no_existe"})
 
     return jsonify({
-        "estado": partidas[codigo]["estado"]
+        "estado": partida_db["estado"]
     })
 
 @app.route("/juego/<codigo>")
