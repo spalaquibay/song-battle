@@ -564,6 +564,7 @@ def responder(codigo):
     if respuesta == "reggaetón":
         respuesta = "reggaeton"
 
+
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -589,6 +590,7 @@ def responder(codigo):
     indice = datos["pregunta_actual"]
     puntos = datos["puntos"]
     total_preguntas = datos["total_preguntas"]
+
 
     # Comprobar si la partida ya terminó
     if indice >= total_preguntas:
@@ -631,22 +633,38 @@ def responder(codigo):
         resultado = "Respuesta incorrecta ❌"
         puntos_ganados = 0
 
-    # Avanzar a la siguiente pregunta
-    indice += 1
-
     cursor.execute(
         """
         UPDATE jugadores
-        SET puntos = ?, pregunta_actual = ?
-        WHERE id = ?
+        SET puntos = puntos + ?, pregunta_actual = pregunta_actual + 1
+        WHERE id = ? AND pregunta_actual = ?
         """,
-        (puntos, indice, player_id)
+        (puntos_ganados, player_id, indice)
     )
 
+    if cursor.rowcount == 0:
+        conexion.rollback()
+        conexion.close()
+        return "Esta pregunta ya fue respondida."
+
     conexion.commit()
+
+    cursor.execute(
+        """
+        SELECT puntos, pregunta_actual
+        FROM jugadores
+        WHERE id = ?
+        """,
+        (player_id,)
+    )
+
+    jugador_actualizado = cursor.fetchone()
+
+    puntos = jugador_actualizado["puntos"]
+    indice = jugador_actualizado["pregunta_actual"]
+
     conexion.close()
 
-    # Comprobar si quedan preguntas
     siguiente = indice < total_preguntas
 
     return render_template(

@@ -26,15 +26,14 @@
     <p>Selecciona tu respuesta:</p>
 
     <form method="POST" action="/responder/{{ codigo }}">
+    
+        <input type="hidden" name="pregunta" value="{{ numero_pregunta }}">
 
         {% for opcion in opciones %}
-
             <button type="submit" name="respuesta" value="{{ opcion }}">
                 🎵 {{ opcion }}
             </button>
-
             <br><br>
-
         {% endfor %}
 
     </form>
