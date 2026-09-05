@@ -119,8 +119,7 @@ def crear_partida():
 
 @app.route("/sala/<codigo>")
 def sala(codigo):
-    if codigo not in partidas:
-        return "La partida no existe."
+  
 
     conexion = conectar()
     cursor = conexion.cursor()
