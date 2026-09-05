@@ -10,59 +10,244 @@ crear_tablas()
 
 preguntas_prueba = [
     {
-        "pregunta": "¿Quién canta Shape of You?",
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
         "opciones": [
-            "Ed Sheeran",
-            "Bruno Mars",
-            "Justin Bieber",
-            "The Weeknd"
+            "Shape of You",
+            "Blinding Lights",
+            "Levitating",
+            "Bad Guy"
         ],
         "correcta": 0,
-        "cancion_id": 1
+        "cancion_id": 1,
+        "categoria": "pop"
     },
     {
-        "pregunta": "¿Quién canta Bad Guy?",
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
         "opciones": [
-            "Taylor Swift",
-            "Billie Eilish",
-            "Ariana Grande",
-            "Dua Lipa"
+            "Shape of You",
+            "Blinding Lights",
+            "As It Was",
+            "Bad Guy"
         ],
         "correcta": 1,
-        "cancion_id": 2
+        "cancion_id": 2,
+        "categoria": "pop"
     },
     {
-        "pregunta": "¿Quién canta Blinding Lights?",
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
         "opciones": [
-            "The Weeknd",
-            "Drake",
-            "Ed Sheeran",
-            "Post Malone"
+            "Levitating",
+            "As It Was",
+            "Blinding Lights",
+            "Shape of You"
         ],
         "correcta": 0,
-        "cancion_id": 1
+        "cancion_id": 3,
+        "categoria": "pop"
     },
     {
-        "pregunta": "¿Quién canta Levitating?",
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
         "opciones": [
-            "Dua Lipa",
-            "Ariana Grande",
-            "Billie Eilish",
-            "Selena Gomez"
+            "Bad Guy",
+            "Shape of You",
+            "As It Was",
+            "Levitating"
         ],
         "correcta": 0,
-        "cancion_id": 1
+        "cancion_id": 4,
+        "categoria": "pop"
     },
     {
-        "pregunta": "¿Quién canta Uptown Funk?",
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
         "opciones": [
-            "Bruno Mars",
-            "Ed Sheeran",
-            "Justin Timberlake",
-            "The Weeknd"
+            "Blinding Lights",
+            "Levitating",
+            "Bad Guy",
+            "As It Was"
+        ],
+        "correcta": 3,
+        "cancion_id": 5,
+        "categoria": "pop"
+    },
+        {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Smells Like Teen Spirit",
+            "We Will Rock You",
+            "It's My Life",
+            "Sweet Child o' Mine"
         ],
         "correcta": 0,
-        "cancion_id": 2
+        "cancion_id": 6,
+        "categoria": "rock"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Another One Bites the Dust",
+            "We Will Rock You",
+            "Smells Like Teen Spirit",
+            "Sweet Child o' Mine"
+        ],
+        "correcta": 1,
+        "cancion_id": 7,
+        "categoria": "rock"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "We Will Rock You",
+            "It's My Life",
+            "Another One Bites the Dust",
+            "Smells Like Teen Spirit"
+        ],
+        "correcta": 2,
+        "cancion_id": 8,
+        "categoria": "rock"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Sweet Child o' Mine",
+            "Smells Like Teen Spirit",
+            "We Will Rock You",
+            "It's My Life"
+        ],
+        "correcta": 3,
+        "cancion_id": 9,
+        "categoria": "rock"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "It's My Life",
+            "Another One Bites the Dust",
+            "Sweet Child o' Mine",
+            "Smells Like Teen Spirit"
+        ],
+        "correcta": 2,
+        "cancion_id": 10,
+        "categoria": "rock"
+    },
+        {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Gasolina",
+            "Despacito",
+            "EOo",
+            "Dákiti"
+        ],
+        "correcta": 0,
+        "cancion_id": 11,
+        "categoria": "reggaeton"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Gata Only",
+            "Despacito",
+            "Gasolina",
+            "EOo"
+        ],
+        "correcta": 1,
+        "cancion_id": 12,
+        "categoria": "reggaeton"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Dákiti",
+            "Gata Only",
+            "EOo",
+            "Gasolina"
+        ],
+        "correcta": 2,
+        "cancion_id": 13,
+        "categoria": "reggaeton"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "EOo",
+            "Gasolina",
+            "Dákiti",
+            "Gata Only"
+        ],
+        "correcta": 2,
+        "cancion_id": 14,
+        "categoria": "reggaeton"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Despacito",
+            "Dákiti",
+            "Gasolina",
+            "Gata Only"
+        ],
+        "correcta": 3,
+        "cancion_id": 15,
+        "categoria": "reggaeton"
+    },
+        {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Si Antes Te Hubiera Conocido",
+            "LALA",
+            "Me Rehúso",
+            "Columbia"
+        ],
+        "correcta": 0,
+        "cancion_id": 16,
+        "categoria": "latina"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Columbia",
+            "LALA",
+            "Sigo Extrañándote",
+            "Si Antes Te Hubiera Conocido"
+        ],
+        "correcta": 1,
+        "cancion_id": 17,
+        "categoria": "latina"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Me Rehúso",
+            "Si Antes Te Hubiera Conocido",
+            "LALA",
+            "Sigo Extrañándote"
+        ],
+        "correcta": 0,
+        "cancion_id": 18,
+        "categoria": "latina"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "LALA",
+            "Sigo Extrañándote",
+            "Columbia",
+            "Me Rehúso"
+        ],
+        "correcta": 2,
+        "cancion_id": 19,
+        "categoria": "latina"
+    },
+    {
+        "pregunta": "🎧 ¿Qué canción estás escuchando?",
+        "opciones": [
+            "Columbia",
+            "Me Rehúso",
+            "Si Antes Te Hubiera Conocido",
+            "Sigo Extrañándote"
+        ],
+        "correcta": 3,
+        "cancion_id": 20,
+        "categoria": "latina"
     }
 
 ]
@@ -275,7 +460,7 @@ def juego(codigo):
 
     cursor.execute(
         """
-        SELECT p.id, p.codigo, j.puntos, j.pregunta_actual
+        SELECT p.id, p.codigo, p.categoria, j.puntos, j.pregunta_actual
         FROM partidas p
         JOIN jugadores j ON j.partida_id = p.id
         WHERE p.codigo = ? AND j.id = ?
@@ -291,8 +476,16 @@ def juego(codigo):
 
     indice = datos["pregunta_actual"]
     puntos = datos["puntos"]
+    categoria = datos["categoria"]
 
-    if indice >= len(preguntas_prueba):
+    # Obtener las preguntas de la categoría seleccionada
+    preguntas_categoria = [
+        p for p in preguntas_prueba
+        if p["categoria"] == categoria
+    ]
+
+    # Comprobar si ya terminó las 5 preguntas
+    if indice >= len(preguntas_categoria):
         return render_template(
             "resultado.html",
             resultado="🎉 ¡Partida terminada!",
@@ -302,32 +495,36 @@ def juego(codigo):
             codigo=codigo
         )
 
-    pregunta = preguntas_prueba[indice]
-
-    # Buscar la canción correspondiente a la pregunta
+    # Obtener las canciones de la categoría seleccionada
     conexion = conectar()
     cursor = conexion.cursor()
 
     cursor.execute(
         """
-        SELECT titulo, artista, categoria, archivo
+        SELECT id, titulo, artista, categoria, archivo
         FROM canciones
-        WHERE id = ?
+        WHERE categoria = ?
+        ORDER BY id
+        LIMIT 5
         """,
-        (pregunta["cancion_id"],)
+        (categoria,)
     )
 
-    cancion = cursor.fetchone()
+    canciones = cursor.fetchall()
     conexion.close()
+
+    # Obtener la pregunta y canción correspondientes
+    pregunta = preguntas_categoria[indice]
+    cancion = canciones[indice]
 
     return render_template(
         "juego.html",
         codigo=codigo,
         pregunta=pregunta,
         numero_pregunta=indice + 1,
-        total_preguntas=len(preguntas_prueba),
+        total_preguntas=len(preguntas_categoria),
         cancion=cancion
-    )      
+    )    
 
 @app.route("/responder/<codigo>", methods=["POST"])
 def responder(codigo):
@@ -343,7 +540,7 @@ def responder(codigo):
 
     cursor.execute(
         """
-        SELECT p.id, j.puntos, j.pregunta_actual
+        SELECT p.id, p.categoria, j.puntos, j.pregunta_actual
         FROM partidas p
         JOIN jugadores j ON j.partida_id = p.id
         WHERE p.codigo = ? AND j.id = ?
@@ -359,8 +556,16 @@ def responder(codigo):
 
     indice = datos["pregunta_actual"]
     puntos = datos["puntos"]
+    categoria = datos["categoria"]
 
-    if indice >= len(preguntas_prueba):
+    # Obtener las preguntas de la categoría seleccionada
+    preguntas_categoria = [
+        p for p in preguntas_prueba
+        if p["categoria"] == categoria
+    ]
+
+    # Comprobar si la partida ya terminó
+    if indice >= len(preguntas_categoria):
         conexion.close()
 
         return render_template(
@@ -372,8 +577,10 @@ def responder(codigo):
             codigo=codigo
         )
 
-    pregunta = preguntas_prueba[indice]
+    # Obtener la pregunta actual de la categoría
+    pregunta = preguntas_categoria[indice]
 
+    # Comprobar la respuesta
     if respuesta == pregunta["correcta"]:
         puntos += 1
         resultado = "¡Correcto! 🎉"
@@ -382,6 +589,7 @@ def responder(codigo):
         resultado = "Respuesta incorrecta ❌"
         puntos_ganados = 0
 
+    # Avanzar a la siguiente pregunta
     indice += 1
 
     cursor.execute(
@@ -396,7 +604,8 @@ def responder(codigo):
     conexion.commit()
     conexion.close()
 
-    siguiente = indice < len(preguntas_prueba)
+    # Comprobar si quedan preguntas
+    siguiente = indice < len(preguntas_categoria)
 
     return render_template(
         "resultado.html",
