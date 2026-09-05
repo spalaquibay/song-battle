@@ -41,7 +41,30 @@ preguntas_prueba = [
         ],
         "correcta": 0,
         "cancion_id": 1
+    },
+    {
+        "pregunta": "¿Quién canta Levitating?",
+        "opciones": [
+            "Dua Lipa",
+            "Ariana Grande",
+            "Billie Eilish",
+            "Selena Gomez"
+        ],
+        "correcta": 0,
+        "cancion_id": 1
+    },
+    {
+        "pregunta": "¿Quién canta Uptown Funk?",
+        "opciones": [
+            "Bruno Mars",
+            "Ed Sheeran",
+            "Justin Timberlake",
+            "The Weeknd"
+        ],
+        "correcta": 0,
+        "cancion_id": 2
     }
+
 ]
 
 
