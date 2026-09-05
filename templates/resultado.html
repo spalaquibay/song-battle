@@ -4,43 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultado - Song Battle</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .contenedor {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .resultado {
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .puntos-pregunta {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .puntos {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0 25px;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🎵 Song Battle</h1>
+    <div class="contenedor">
 
-    <h2>{{ resultado }}</h2>
+        <h1>🎵 Song Battle</h1>
 
-    <p>⭐ Puntos de esta pregunta:</p>
+        <div class="resultado">
+            {{ resultado }}
+        </div>
 
-    <h2>+{{ puntos_ganados }} punto(s)</h2>
+        <p class="puntos-pregunta">⭐ Puntos de esta pregunta</p>
 
-    <p>🏆 Puntuación acumulada:</p>
+        <div class="puntos">
+            +{{ puntos_ganados }} punto(s)
+        </div>
 
-    <h2>{{ puntos }} punto(s)</h2>
+        <p class="puntos-pregunta">🏆 Puntuación acumulada</p>
 
-    <hr>
+        <div class="puntos">
+            {{ puntos }} punto(s)
+        </div>
 
-    {% if siguiente %}
+        <hr>
 
-        <form method="GET" action="/juego/{{ codigo }}">
-            <button type="submit">➡️ Siguiente pregunta</button>
-        </form>
+        {% if siguiente %}
 
-    {% else %}
+            <form method="GET" action="/juego/{{ codigo }}">
+                <button type="submit">➡️ Siguiente pregunta</button>
+            </form>
 
-        <h2>🎉 ¡Partida terminada!</h2>
+        {% else %}
 
-        <form method="GET" action="/ranking/{{ codigo }}">
-            <button type="submit">🏆 Ver ranking</button>
-        </form>
+            <h2>🎉 ¡Partida terminada!</h2>
 
-        <br>
+            <form method="GET" action="/ranking/{{ codigo }}">
+                <button type="submit">🏆 Ver ranking</button>
+            </form>
 
-        <a href="/">← Volver al inicio</a>
+            <br><br>
 
-    {% endif %}
+            <a href="/">← Volver al inicio</a>
+
+        {% endif %}
+
+    </div>
 
 </body>
 </html>
