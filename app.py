@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 import random
 import string
-from database import crear_tablas
+from database import crear_tablas, conectar
 
 app = Flask(__name__)
 app.secret_key = "song-battle-clave-secreta"
@@ -50,29 +50,72 @@ def inicio():
 
 @app.route("/crear-partida", methods=["GET", "POST"])
 def crear_partida():
-
     if request.method == "POST":
-
+        nickname = request.form["nickname"]
         categoria = request.form["categoria"]
         preguntas = request.form["preguntas"]
 
         codigo = ''.join(
-            random.choices(string.ascii_uppercase + string.digits, k=4)
+            random.choices(
+                string.ascii_uppercase + string.digits,
+                k=4
+            )
         )
 
+        # Crear la partida en memoria
         partidas[codigo] = {
             "categoria": categoria,
             "preguntas": preguntas,
-            "jugadores": [],
+            "jugadores": [nickname],
             "puntos": {},
             "estado": "esperando",
             "pregunta_actual": {}
         }
 
+        # Guardar la partida en SQLite
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO partidas
+            (codigo, categoria, total_preguntas, estado)
+            VALUES (?, ?, ?, ?)
+            """,
+            (codigo, categoria, int(preguntas), "esperando")
+        )
+
+        # Obtener el ID de la partida
+        partida_id = cursor.lastrowid
+
+        # Registrar al anfitrión como jugador
+        cursor.execute(
+            """
+            INSERT INTO jugadores
+            (partida_id, nickname, puntos, pregunta_actual)
+            VALUES (?, ?, ?, ?)
+            """,
+            (partida_id, nickname, 0, 0)
+        )
+
+        # Obtener ID único del anfitrión
+        player_id = cursor.lastrowid
+
+        conexion.commit()
+        conexion.close()
+
+        # Guardar los datos del anfitrión en memoria
+        partidas[codigo]["puntos"][player_id] = 0
+        partidas[codigo]["pregunta_actual"][player_id] = 0
+
+        # Guardar identificación del anfitrión en su sesión
+        session["nickname"] = nickname
+        session["codigo"] = codigo
+        session["player_id"] = player_id
+
         return redirect(f"/sala/{codigo}")
 
     return render_template("crear_partida.html")
-
 
 @app.route("/sala/<codigo>")
 def sala(codigo):
@@ -116,21 +159,25 @@ def juego(codigo):
         return "La partida no existe."
 
     partida = partidas[codigo]
-    nickname = session.get("nickname")
 
-    if not nickname:
+    player_id = session.get("player_id")
+
+    if not player_id:
         return "No hay un jugador identificado."
 
-    if nickname not in partida["pregunta_actual"]:
-        partida["pregunta_actual"][nickname] = 0
+    if player_id not in partida["puntos"]:
+        return "El jugador no pertenece a esta partida."
 
-    indice = partida["pregunta_actual"][nickname]
+    indice = partida["pregunta_actual"][player_id]
 
     if indice >= len(preguntas_prueba):
         return render_template(
             "resultado.html",
             resultado="🎉 ¡Partida terminada!",
-            puntos=partida["puntos"][nickname]
+            puntos=partida["puntos"][player_id],
+            puntos_ganados=0,
+            siguiente=False,
+            codigo=codigo
         )
 
     pregunta = preguntas_prueba[indice]
@@ -138,7 +185,6 @@ def juego(codigo):
     return render_template(
         "juego.html",
         codigo=codigo,
-        preguntas=partida["preguntas"],
         pregunta=pregunta,
         numero_pregunta=indice + 1,
         total_preguntas=len(preguntas_prueba)
@@ -149,50 +195,72 @@ def responder(codigo):
     if codigo not in partidas:
         return "La partida no existe."
 
-    nickname = session.get("nickname")
+    player_id = session.get("player_id")
 
-    if not nickname:
+    if not player_id:
         return "No hay un jugador identificado."
 
     respuesta = int(request.form["respuesta"])
 
     partida = partidas[codigo]
 
-    if nickname not in partida["puntos"]:
-        partida["puntos"][nickname] = 0
+    if player_id not in partida["puntos"]:
+        return "El jugador no pertenece a esta partida."
 
-    if nickname not in partida["pregunta_actual"]:
-        partida["pregunta_actual"][nickname] = 0
-
-    indice = partida["pregunta_actual"][nickname]
+    indice = partida["pregunta_actual"][player_id]
 
     if indice >= len(preguntas_prueba):
         return render_template(
             "resultado.html",
             resultado="🎉 ¡Partida terminada!",
-            puntos=partida["puntos"][nickname]
+            puntos=partida["puntos"][player_id],
+            puntos_ganados=0,
+            siguiente=False,
+            codigo=codigo
         )
 
     pregunta = preguntas_prueba[indice]
 
+    # Comprobar respuesta
     if respuesta == pregunta["correcta"]:
-        partida["puntos"][nickname] += 1
+        partida["puntos"][player_id] += 1
         resultado = "¡Correcto! 🎉"
         puntos_ganados = 1
     else:
         resultado = "Respuesta incorrecta ❌"
         puntos_ganados = 0
 
-    partida["pregunta_actual"][nickname] += 1
+    # Pasar a la siguiente pregunta
+    partida["pregunta_actual"][player_id] += 1
+
+    # Guardar puntos y pregunta actual en SQLite
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        UPDATE jugadores
+        SET puntos = ?, pregunta_actual = ?
+        WHERE id = ?
+        """,
+        (
+            partida["puntos"][player_id],
+            partida["pregunta_actual"][player_id],
+            player_id
+        )
+    )
+
+    conexion.commit()
+    conexion.close()
 
     siguiente = (
-        partida["pregunta_actual"][nickname] < len(preguntas_prueba)
+        partida["pregunta_actual"][player_id] < len(preguntas_prueba)
     )
 
     return render_template(
         "resultado.html",
         resultado=resultado,
-        puntos=partida["puntos"][nickname],
+        puntos=partida["puntos"][player_id],
         puntos_ganados=puntos_ganados,
         siguiente=siguiente,
         codigo=codigo
@@ -200,24 +268,54 @@ def responder(codigo):
 
 @app.route("/unirse", methods=["GET", "POST"])
 def unirse():
-
     if request.method == "POST":
-
         codigo = request.form["codigo"].upper()
         nickname = request.form["nickname"]
 
         if codigo not in partidas:
             return "La partida no existe."
 
-        if nickname not in partidas[codigo]["jugadores"]:
-            partidas[codigo]["jugadores"].append(nickname)
+        # Agregar jugador a la partida en memoria
+        partidas[codigo]["jugadores"].append(nickname)
 
-        partidas[codigo]["puntos"][nickname] = 0
-        partidas[codigo]["pregunta_actual"][nickname] = 0
+        # Guardar jugador en SQLite
+        conexion = conectar()
+        cursor = conexion.cursor()
 
+        cursor.execute(
+            "SELECT id FROM partidas WHERE codigo = ?",
+            (codigo,)
+        )
+
+        partida_db = cursor.fetchone()
+
+        if not partida_db:
+            conexion.close()
+            return "La partida no existe en la base de datos."
+
+        cursor.execute(
+            """
+            INSERT INTO jugadores
+            (partida_id, nickname, puntos, pregunta_actual)
+            VALUES (?, ?, ?, ?)
+            """,
+            (partida_db["id"], nickname, 0, 0)
+        )
+
+        # Obtener el ID único del jugador
+        player_id = cursor.lastrowid
+
+        conexion.commit()
+        conexion.close()
+
+        # Usar el ID del jugador para controlar su partida
+        partidas[codigo]["puntos"][player_id] = 0
+        partidas[codigo]["pregunta_actual"][player_id] = 0
+
+        # Guardar datos del jugador en su sesión
         session["nickname"] = nickname
         session["codigo"] = codigo
-        session["pregunta_actual"] = 0
+        session["player_id"] = player_id
 
         return render_template(
             "jugador.html",
