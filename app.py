@@ -263,9 +263,6 @@ def juego(codigo):
 
 @app.route("/responder/<codigo>", methods=["POST"])
 def responder(codigo):
-    if codigo not in partidas:
-        return "La partida no existe."
-
     player_id = session.get("player_id")
 
     if not player_id:
@@ -273,18 +270,35 @@ def responder(codigo):
 
     respuesta = int(request.form["respuesta"])
 
-    partida = partidas[codigo]
+    conexion = conectar()
+    cursor = conexion.cursor()
 
-    if player_id not in partida["puntos"]:
+    cursor.execute(
+        """
+        SELECT p.id, j.puntos, j.pregunta_actual
+        FROM partidas p
+        JOIN jugadores j ON j.partida_id = p.id
+        WHERE p.codigo = ? AND j.id = ?
+        """,
+        (codigo, player_id)
+    )
+
+    datos = cursor.fetchone()
+
+    if not datos:
+        conexion.close()
         return "El jugador no pertenece a esta partida."
 
-    indice = partida["pregunta_actual"][player_id]
+    indice = datos["pregunta_actual"]
+    puntos = datos["puntos"]
 
     if indice >= len(preguntas_prueba):
+        conexion.close()
+
         return render_template(
             "resultado.html",
             resultado="🎉 ¡Partida terminada!",
-            puntos=partida["puntos"][player_id],
+            puntos=puntos,
             puntos_ganados=0,
             siguiente=False,
             codigo=codigo
@@ -292,21 +306,15 @@ def responder(codigo):
 
     pregunta = preguntas_prueba[indice]
 
-    # Comprobar respuesta
     if respuesta == pregunta["correcta"]:
-        partida["puntos"][player_id] += 1
+        puntos += 1
         resultado = "¡Correcto! 🎉"
         puntos_ganados = 1
     else:
         resultado = "Respuesta incorrecta ❌"
         puntos_ganados = 0
 
-    # Pasar a la siguiente pregunta
-    partida["pregunta_actual"][player_id] += 1
-
-    # Guardar puntos y pregunta actual en SQLite
-    conexion = conectar()
-    cursor = conexion.cursor()
+    indice += 1
 
     cursor.execute(
         """
@@ -314,24 +322,18 @@ def responder(codigo):
         SET puntos = ?, pregunta_actual = ?
         WHERE id = ?
         """,
-        (
-            partida["puntos"][player_id],
-            partida["pregunta_actual"][player_id],
-            player_id
-        )
+        (puntos, indice, player_id)
     )
 
     conexion.commit()
     conexion.close()
 
-    siguiente = (
-        partida["pregunta_actual"][player_id] < len(preguntas_prueba)
-    )
+    siguiente = indice < len(preguntas_prueba)
 
     return render_template(
         "resultado.html",
         resultado=resultado,
-        puntos=partida["puntos"][player_id],
+        puntos=puntos,
         puntos_ganados=puntos_ganados,
         siguiente=siguiente,
         codigo=codigo
