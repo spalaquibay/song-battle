@@ -207,13 +207,6 @@ def jugadores(codigo):
 
 @app.route("/iniciar/<codigo>", methods=["POST"])
 def iniciar(codigo):
-    if codigo not in partidas:
-        return "La partida no existe."
-
-    # Cambiar el estado en memoria
-    partidas[codigo]["estado"] = "jugando"
-
-    # Cambiar el estado en SQLite
     conexion = conectar()
     cursor = conexion.cursor()
 
@@ -225,6 +218,10 @@ def iniciar(codigo):
         """,
         ("jugando", codigo)
     )
+
+    if cursor.rowcount == 0:
+        conexion.close()
+        return "La partida no existe."
 
     conexion.commit()
     conexion.close()
