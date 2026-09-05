@@ -62,15 +62,6 @@ def crear_partida():
             )
         )
 
-        # Crear la partida en memoria
-        partidas[codigo] = {
-            "categoria": categoria,
-            "preguntas": preguntas,
-            "jugadores": [nickname],
-            "puntos": {},
-            "estado": "esperando",
-            "pregunta_actual": {}
-        }
 
         # Guardar la partida en SQLite
         conexion = conectar()
@@ -104,9 +95,8 @@ def crear_partida():
         conexion.commit()
         conexion.close()
 
-        # Guardar los datos del anfitrión en memoria
-        partidas[codigo]["puntos"][player_id] = 0
-        partidas[codigo]["pregunta_actual"][player_id] = 0
+    
+
 
         # Guardar identificación del anfitrión en su sesión
         session["nickname"] = nickname
@@ -421,18 +411,16 @@ def unirse():
         codigo = request.form["codigo"].upper()
         nickname = request.form["nickname"]
 
-        if codigo not in partidas:
-            return "La partida no existe."
-
-        # Agregar jugador a la partida en memoria
-        partidas[codigo]["jugadores"].append(nickname)
-
-        # Guardar jugador en SQLite
         conexion = conectar()
         cursor = conexion.cursor()
 
+        # Buscar la partida en SQLite
         cursor.execute(
-            "SELECT id FROM partidas WHERE codigo = ?",
+            """
+            SELECT id, estado
+            FROM partidas
+            WHERE codigo = ?
+            """,
             (codigo,)
         )
 
@@ -440,8 +428,9 @@ def unirse():
 
         if not partida_db:
             conexion.close()
-            return "La partida no existe en la base de datos."
+            return "La partida no existe."
 
+        # Registrar al jugador en SQLite
         cursor.execute(
             """
             INSERT INTO jugadores
@@ -451,15 +440,10 @@ def unirse():
             (partida_db["id"], nickname, 0, 0)
         )
 
-        # Obtener el ID único del jugador
         player_id = cursor.lastrowid
 
         conexion.commit()
         conexion.close()
-
-        # Usar el ID del jugador para controlar su partida
-        partidas[codigo]["puntos"][player_id] = 0
-        partidas[codigo]["pregunta_actual"][player_id] = 0
 
         # Guardar datos del jugador en su sesión
         session["nickname"] = nickname
