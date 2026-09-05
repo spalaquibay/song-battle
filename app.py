@@ -263,8 +263,7 @@ def inicio():
 def crear_partida():
     if request.method == "POST":
         nickname = request.form["nickname"]
-        categoria = request.form["categoria"]
-        preguntas = request.form["preguntas"]
+        total_preguntas = request.form["total_preguntas"]
 
         codigo = ''.join(
             random.choices(
@@ -272,7 +271,6 @@ def crear_partida():
                 k=4
             )
         )
-
 
         # Guardar la partida en SQLite
         conexion = conectar()
@@ -284,7 +282,7 @@ def crear_partida():
             (codigo, categoria, total_preguntas, estado)
             VALUES (?, ?, ?, ?)
             """,
-            (codigo, categoria, int(preguntas), "esperando")
+            (codigo, "mixto", int(total_preguntas), "esperando")
         )
 
         # Obtener el ID de la partida
@@ -306,9 +304,6 @@ def crear_partida():
         conexion.commit()
         conexion.close()
 
-    
-
-
         # Guardar identificación del anfitrión en su sesión
         session["nickname"] = nickname
         session["codigo"] = codigo
@@ -328,7 +323,7 @@ def sala(codigo):
     # Buscar la partida en SQLite
     cursor.execute(
         """
-        SELECT id, codigo, categoria, total_preguntas, estado
+        SELECT id, codigo, total_preguntas, estado
         FROM partidas
         WHERE codigo = ?
         """,
@@ -361,7 +356,6 @@ def sala(codigo):
     return render_template(
         "sala.html",
         codigo=partida_db["codigo"],
-        categoria=partida_db["categoria"],
         preguntas=partida_db["total_preguntas"],
         jugadores=jugadores
     )
