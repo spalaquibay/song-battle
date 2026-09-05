@@ -34,6 +34,16 @@ def crear_tablas():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS canciones (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titulo TEXT NOT NULL,
+            artista TEXT NOT NULL,
+            categoria TEXT NOT NULL,
+            archivo TEXT NOT NULL
+        )
+    """)
+
     conexion.commit()
     conexion.close()
 
