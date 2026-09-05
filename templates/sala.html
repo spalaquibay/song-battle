@@ -24,15 +24,15 @@
 
     <h2>👥 Jugadores</h2>
 
-    {% if jugadores %}
-        <ul>
-            {% for jugador in jugadores %}
-                <li>🟢 {{ jugador }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aún no hay jugadores conectados.</p>
-    {% endif %}
+    <ul id="lista-jugadores">
+        {% for jugador in jugadores %}
+            <li>🟢 {{ jugador }}</li>
+        {% endfor %}
+    </ul>
+
+    <p id="sin-jugadores" {% if jugadores %}style="display: none;"{% endif %}>
+        Aún no hay jugadores conectados.
+    </p>
 
     <form method="POST" action="/iniciar/{{ codigo }}">
         <button type="submit">▶️ Iniciar juego</button>
@@ -41,6 +41,33 @@
     <br><br>
 
     <a href="/crear-partida">← Volver</a>
+
+<script>
+function actualizarJugadores() {
+    fetch("/jugadores/{{ codigo }}")
+        .then(response => response.json())
+        .then(data => {
+            const lista = document.getElementById("lista-jugadores");
+            const mensaje = document.getElementById("sin-jugadores");
+
+            lista.innerHTML = "";
+
+            if (data.jugadores.length === 0) {
+                mensaje.style.display = "block";
+            } else {
+                mensaje.style.display = "none";
+
+                data.jugadores.forEach(jugador => {
+                    const elemento = document.createElement("li");
+                    elemento.textContent = "🟢 " + jugador;
+                    lista.appendChild(elemento);
+                });
+            }
+        });
+}
+
+setInterval(actualizarJugadores, 2000);
+</script>
 
 </body>
 </html>

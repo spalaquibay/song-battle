@@ -166,6 +166,46 @@ def sala(codigo):
         jugadores=jugadores
     )
 
+
+@app.route("/jugadores/<codigo>")
+def jugadores(codigo):
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        SELECT p.id
+        FROM partidas p
+        WHERE p.codigo = ?
+        """,
+        (codigo,)
+    )
+
+    partida_db = cursor.fetchone()
+
+    if not partida_db:
+        conexion.close()
+        return jsonify({"jugadores": []})
+
+    cursor.execute(
+        """
+        SELECT nickname
+        FROM jugadores
+        WHERE partida_id = ?
+        ORDER BY id
+        """,
+        (partida_db["id"],)
+    )
+
+    jugadores_db = cursor.fetchall()
+    conexion.close()
+
+    jugadores = [jugador["nickname"] for jugador in jugadores_db]
+
+    return jsonify({
+        "jugadores": jugadores
+    })
+
 @app.route("/iniciar/<codigo>", methods=["POST"])
 def iniciar(codigo):
     if codigo not in partidas:
